@@ -52,49 +52,52 @@ fun LoginScreen() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Bem vindo(a) à Taqtile!"
-            )
+            Title()
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            Column() {
-                Text(text = "E-mail")
-                OutlinedTextField(
-                    value = emailState.value,
-                    onValueChange = { emailState.value = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-            }
+            InputFields(emailState, "E-mail", KeyboardType.Email)
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            Column() {
-                Text(text = "Senha")
-                OutlinedTextField(
-                    value = passwordState.value,
-                    onValueChange = { passwordState.value = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
-                    ),
-                    shape = RoundedCornerShape(16.dp)
-                )
-            }
+            InputFields(passwordState, "Senha", KeyboardType.Password)
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
-                Text(fontSize = 20.sp, text = "Entrar")
-            }
+            LoginButton()
         }
     }
 }
+
+@Composable
+fun Title() {
+    Text(
+        fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Bem vindo(a) à Taqtile!"
+    )
+}
+
+@Composable
+fun InputFields(state: androidx.compose.runtime.MutableState<String>, title: String, type: KeyboardType) {
+    Column() {
+        Text(text = title)
+        OutlinedTextField(
+            value = state.value,
+            onValueChange = { state.value = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = type
+            ),
+            shape = RoundedCornerShape(16.dp)
+        )
+    }
+}
+
+@Composable
+fun LoginButton() {
+    Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+        Text(fontSize = 20.sp, text = "Entrar")
+    }
+}
+
