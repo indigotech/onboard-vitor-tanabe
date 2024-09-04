@@ -111,8 +111,6 @@ fun InputFields(value: String, title: String, type: KeyboardType, onValueChange:
             shape = RoundedCornerShape(16.dp),
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
         )
-
-        )
     }
 }
 
