@@ -46,7 +46,6 @@ fun LoginScreen() {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .background(color = Color.Cyan)
                 .padding(32.dp),
         ) {
 
