@@ -43,6 +43,7 @@ fun LoginScreen() {
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val emailErrorMessages = remember { mutableStateOf(listOf<String>()) }
+    val passwordErrorMessages = remember { mutableStateOf(listOf<String>()) }
 
     fun changeEmailState(email: String) {
         emailState.value = email
@@ -72,6 +73,8 @@ fun LoginScreen() {
             Spacer(modifier = Modifier.height(36.dp))
 
             InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) })
+
+            ShowErrors(passwordErrorMessages)
 
             Spacer(modifier = Modifier.height(36.dp))
 
@@ -135,5 +138,21 @@ fun validateEmailInputs(email: String): List<String> {
     } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
         errors.add("E-mail inválido")
     }
+    return errors
+}
+
+fun validatePasswordInputs(password: String): List<String> {
+    val errors = mutableListOf<String>()
+    // Regex para conter pelo menos uma letra e um número
+    val passwordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
+
+    if (password.isEmpty()) {
+        errors.add("O campo de senha está vazio")
+    } else if (password.length < 7) {
+        errors.add("A senha deve ter pelo menos 7 caracteres")
+    } else if (!passwordRegex.containsMatchIn(password)) {
+        errors.add("A senha deve conter pelo menos uma letra e um número")
+    }
+
     return errors
 }
