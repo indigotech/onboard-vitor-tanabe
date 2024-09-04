@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -47,9 +49,14 @@ fun LoginScreen() {
                 .background(color = Color.Cyan)
                 .padding(32.dp),
         ) {
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Text(
                 fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Bem vindo(a) à Taqtile!"
             )
+
+            Spacer(modifier = Modifier.height(48.dp))
 
             Column() {
                 Text(text = "E-mail")
@@ -62,6 +69,8 @@ fun LoginScreen() {
                 )
             }
 
+            Spacer(modifier = Modifier.height(36.dp))
+
             Column() {
                 Text(text = "Senha")
                 OutlinedTextField(
@@ -72,6 +81,8 @@ fun LoginScreen() {
                         .padding(top = 16.dp)
                 )
             }
+
+            Spacer(modifier = Modifier.height(36.dp))
 
             Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
                 Text(fontSize = 20.sp, text = "Entrar")
