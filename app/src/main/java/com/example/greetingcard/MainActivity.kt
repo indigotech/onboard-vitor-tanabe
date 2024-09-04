@@ -42,6 +42,7 @@ fun LoginScreen() {
 
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
+    val emailErrorMessages = remember { mutableStateOf(listOf<String>()) }
 
     fun changeEmailState(email: String) {
         emailState.value = email
@@ -66,13 +67,18 @@ fun LoginScreen() {
 
             InputFields(emailState.value, "E-mail", KeyboardType.Email, onValueChange = { email -> changeEmailState(email) })
 
+            ShowErrors(emailErrorMessages)
+
             Spacer(modifier = Modifier.height(36.dp))
 
             InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) })
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            LoginButton()
+            LoginButton(onClick = {
+                emailErrorMessages.value = validateEmailInputs(emailState.value)
+            }
+            )
         }
     }
 }
@@ -103,9 +109,31 @@ fun InputFields(value: String, title: String, type: KeyboardType, onValueChange:
 }
 
 @Composable
-fun LoginButton() {
-    Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+fun LoginButton(onClick: () -> Unit) {
+    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Text(fontSize = 20.sp, text = "Entrar")
     }
 }
 
+@Composable
+fun ShowErrors(errorMessages: androidx.compose.runtime.MutableState<List<String>>) {
+    if (errorMessages.value.isNotEmpty()) {
+        for (error in errorMessages.value) {
+            Text(
+                text = error,
+                color = androidx.compose.ui.graphics.Color.Red,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+    }
+}
+
+fun validateEmailInputs(email: String): List<String> {
+    val errors = mutableListOf<String>()
+    if (email.isEmpty()) {
+        errors.add("O campo de e-mail está vazio")
+    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        errors.add("E-mail inválido")
+    }
+    return errors
+}
