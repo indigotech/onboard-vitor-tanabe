@@ -35,6 +35,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LoginScreen() {
+
+    val emailState = remember { mutableStateOf("") }
+
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -43,10 +46,24 @@ fun LoginScreen() {
                 .padding(32.dp),
         ) {
             Text(
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                text = "Bem vindo(a) à Taqtile!"
+                fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Bem vindo(a) à Taqtile!"
             )
+
+            Column() {
+                Text(text = "E-mail")
+                OutlinedTextField(
+                    value = emailState.value,
+                    onValueChange = { emailState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                )
+            }
+
+
+
+
+
         }
     }
 }
