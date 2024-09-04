@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -72,6 +73,9 @@ fun LoginScreen() {
                 )
             }
 
+            Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                Text(fontSize = 20.sp, text = "Entrar")
+            }
         }
     }
 }
