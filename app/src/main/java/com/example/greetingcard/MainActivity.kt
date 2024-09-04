@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
 fun LoginScreen() {
 
     val emailState = remember { mutableStateOf("") }
+    val passwordState = remember { mutableStateOf("") }
 
     Scaffold { innerPadding ->
         Column(
@@ -60,9 +61,16 @@ fun LoginScreen() {
                 )
             }
 
-
-
-
+            Column() {
+                Text(text = "Senha")
+                OutlinedTextField(
+                    value = passwordState.value,
+                    onValueChange = { passwordState.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                )
+            }
 
         }
     }
