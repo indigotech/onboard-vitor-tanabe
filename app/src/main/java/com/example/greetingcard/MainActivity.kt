@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.ui.theme.GreetingCardTheme
@@ -72,7 +74,7 @@ fun LoginScreen() {
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) })
+            InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) }, true)
 
             ShowErrors(passwordErrorMessages)
 
@@ -94,7 +96,7 @@ fun Title() {
 }
 
 @Composable
-fun InputFields(value: String, title: String, type: KeyboardType, onValueChange: (String) -> Unit) {
+fun InputFields(value: String, title: String, type: KeyboardType, onValueChange: (String) -> Unit, isPassword: Boolean = false) {
     Column() {
         Text(text = title)
         OutlinedTextField(
@@ -106,7 +108,10 @@ fun InputFields(value: String, title: String, type: KeyboardType, onValueChange:
             keyboardOptions = KeyboardOptions(
                 keyboardType = type
             ),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
+        )
+
         )
     }
 }
