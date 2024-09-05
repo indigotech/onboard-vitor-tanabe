@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.greetingcard.ui.theme.GreetingCardTheme
@@ -42,6 +44,8 @@ fun LoginScreen() {
 
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
+    val emailErrorMessages = remember { mutableStateOf(listOf<String>()) }
+    val passwordErrorMessages = remember { mutableStateOf(listOf<String>()) }
 
     fun changeEmailState(email: String) {
         emailState.value = email
@@ -50,7 +54,6 @@ fun LoginScreen() {
     fun changePasswordState(password: String) {
         passwordState.value = password
     }
-
 
     Scaffold(modifier = Modifier.padding(32.dp)) { innerPadding ->
         Column(
@@ -66,13 +69,20 @@ fun LoginScreen() {
 
             InputFields(emailState.value, "E-mail", KeyboardType.Email, onValueChange = { email -> changeEmailState(email) })
 
-            Spacer(modifier = Modifier.height(36.dp))
-
-            InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) })
+            ShowErrors(emailErrorMessages.value)
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            LoginButton()
+            InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) }, true)
+
+            ShowErrors(passwordErrorMessages.value)
+
+            Spacer(modifier = Modifier.height(36.dp))
+
+            LoginButton(onClick = {
+                emailErrorMessages.value = validateEmailInputs(emailState.value)
+            }
+            )
         }
     }
 }
@@ -85,7 +95,13 @@ fun Title() {
 }
 
 @Composable
-fun InputFields(value: String, title: String, type: KeyboardType, onValueChange: (String) -> Unit) {
+fun InputFields(
+    value: String,
+    title: String,
+    type: KeyboardType,
+    onValueChange: (String) -> Unit,
+    isPassword: Boolean = false
+) {
     Column() {
         Text(text = title)
         OutlinedTextField(
@@ -97,15 +113,54 @@ fun InputFields(value: String, title: String, type: KeyboardType, onValueChange:
             keyboardOptions = KeyboardOptions(
                 keyboardType = type
             ),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
         )
     }
 }
 
 @Composable
-fun LoginButton() {
-    Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+fun LoginButton(onClick: () -> Unit) {
+    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Text(fontSize = 20.sp, text = "Entrar")
     }
 }
 
+@Composable
+fun ShowErrors(errorMessages: List<String>) {
+    if (errorMessages.isNotEmpty()) {
+        for (error in errorMessages) {
+            Text(
+                text = error,
+                color = androidx.compose.ui.graphics.Color.Red,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+    }
+}
+
+fun validateEmailInputs(email: String): List<String> {
+    val errors = mutableListOf<String>()
+    if (email.isEmpty()) {
+        errors.add("O campo de e-mail está vazio")
+    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        errors.add("E-mail inválido")
+    }
+    return errors
+}
+
+fun validatePasswordInputs(password: String): List<String> {
+    val errors = mutableListOf<String>()
+
+    val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
+
+    if (password.isEmpty()) {
+        errors.add("O campo de senha está vazio")
+    } else if (password.length < 7) {
+        errors.add("A senha deve ter pelo menos 7 caracteres")
+    } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
+        errors.add("A senha deve conter pelo menos uma letra e um número")
+    }
+
+    return errors
+}
