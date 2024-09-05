@@ -43,6 +43,15 @@ fun LoginScreen() {
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
 
+    fun changeEmailState(email: String) {
+        emailState.value = email
+    }
+
+    fun changePasswordState(password: String) {
+        passwordState.value = password
+    }
+
+
     Scaffold(modifier = Modifier.padding(32.dp)) { innerPadding ->
         Column(
             modifier = Modifier
@@ -55,11 +64,11 @@ fun LoginScreen() {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            InputFields(emailState, "E-mail", KeyboardType.Email)
+            InputFields(emailState.value, "E-mail", KeyboardType.Email, onValueChange = { email -> changeEmailState(email) })
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            InputFields(passwordState, "Senha", KeyboardType.Password)
+            InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) })
 
             Spacer(modifier = Modifier.height(36.dp))
 
@@ -76,12 +85,12 @@ fun Title() {
 }
 
 @Composable
-fun InputFields(state: androidx.compose.runtime.MutableState<String>, title: String, type: KeyboardType) {
+fun InputFields(value: String, title: String, type: KeyboardType, onValueChange: (String) -> Unit) {
     Column() {
         Text(text = title)
         OutlinedTextField(
-            value = state.value,
-            onValueChange = { state.value = it },
+            value = value,
+            onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
