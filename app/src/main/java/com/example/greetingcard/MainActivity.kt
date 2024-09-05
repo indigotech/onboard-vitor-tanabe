@@ -43,11 +43,10 @@ fun LoginScreen() {
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
 
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.padding(32.dp)) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(32.dp),
         ) {
 
             Spacer(modifier = Modifier.height(24.dp))
