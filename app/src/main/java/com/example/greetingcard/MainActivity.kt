@@ -55,7 +55,6 @@ fun LoginScreen() {
         passwordState.value = password
     }
 
-
     Scaffold(modifier = Modifier.padding(32.dp)) { innerPadding ->
         Column(
             modifier = Modifier
@@ -70,13 +69,13 @@ fun LoginScreen() {
 
             InputFields(emailState.value, "E-mail", KeyboardType.Email, onValueChange = { email -> changeEmailState(email) })
 
-            ShowErrors(emailErrorMessages)
+            ShowErrors(emailErrorMessages.value)
 
             Spacer(modifier = Modifier.height(36.dp))
 
             InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) }, true)
 
-            ShowErrors(passwordErrorMessages)
+            ShowErrors(passwordErrorMessages.value)
 
             Spacer(modifier = Modifier.height(36.dp))
 
@@ -96,7 +95,13 @@ fun Title() {
 }
 
 @Composable
-fun InputFields(value: String, title: String, type: KeyboardType, onValueChange: (String) -> Unit, isPassword: Boolean = false) {
+fun InputFields(
+    value: String,
+    title: String,
+    type: KeyboardType,
+    onValueChange: (String) -> Unit,
+    isPassword: Boolean = false
+) {
     Column() {
         Text(text = title)
         OutlinedTextField(
@@ -122,9 +127,9 @@ fun LoginButton(onClick: () -> Unit) {
 }
 
 @Composable
-fun ShowErrors(errorMessages: androidx.compose.runtime.MutableState<List<String>>) {
-    if (errorMessages.value.isNotEmpty()) {
-        for (error in errorMessages.value) {
+fun ShowErrors(errorMessages: List<String>) {
+    if (errorMessages.isNotEmpty()) {
+        for (error in errorMessages) {
             Text(
                 text = error,
                 color = androidx.compose.ui.graphics.Color.Red,
@@ -146,14 +151,14 @@ fun validateEmailInputs(email: String): List<String> {
 
 fun validatePasswordInputs(password: String): List<String> {
     val errors = mutableListOf<String>()
-    // Regex para conter pelo menos uma letra e um número
-    val passwordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
+
+    val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
 
     if (password.isEmpty()) {
         errors.add("O campo de senha está vazio")
     } else if (password.length < 7) {
         errors.add("A senha deve ter pelo menos 7 caracteres")
-    } else if (!passwordRegex.containsMatchIn(password)) {
+    } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
         errors.add("A senha deve conter pelo menos uma letra e um número")
     }
 
