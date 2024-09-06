@@ -64,6 +64,10 @@ fun LoginScreen() {
     var auth by remember { mutableStateOf<ApiResponse?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
+    val token = remember {
+        mutableStateOf("")
+    }
+
     fun changeEmailState(email: String) {
         emailState.value = email
     }
@@ -105,6 +109,7 @@ fun LoginScreen() {
                         try {
                             val user = ApiRequest(emailState.value, passwordState.value)
                             val response = RetrofitInstance.api.authenticateUser(user).await()
+                            token.value = response.data.token
                             Toast.makeText(context, "Usuário valido e autenticado", Toast.LENGTH_SHORT).show()
                         } catch (e: Exception) {
 
