@@ -81,6 +81,7 @@ fun LoginScreen() {
 
             LoginButton(onClick = {
                 emailErrorMessages.value = validateEmailInputs(emailState.value)
+                passwordErrorMessages.value = validatePasswordInputs(passwordState.value)
             }
             )
         }
