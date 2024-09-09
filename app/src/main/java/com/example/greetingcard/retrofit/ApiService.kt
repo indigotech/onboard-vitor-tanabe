@@ -6,5 +6,5 @@ import retrofit2.http.POST
 
 interface ApiService {
     @POST("authenticate")
-    fun authenticateUser(@Body apiRequest: ApiRequest): Call<ApiResponse>
+    fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
 }

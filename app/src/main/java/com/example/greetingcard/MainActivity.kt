@@ -30,8 +30,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.greetingcard.retrofit.ApiRequest
-import com.example.greetingcard.retrofit.ApiResponse
+import com.example.greetingcard.retrofit.AuthenticationRequestBody
+import com.example.greetingcard.retrofit.AuthenticationResponse
 import com.example.greetingcard.retrofit.RetrofitInstance
 import com.example.greetingcard.ui.theme.GreetingCardTheme
 import kotlinx.coroutines.launch
@@ -61,7 +61,7 @@ fun LoginScreen() {
 
     val context = LocalContext.current
 
-    var auth by remember { mutableStateOf<ApiResponse?>(null) }
+    var auth by remember { mutableStateOf<AuthenticationResponse?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
     val token = remember {
@@ -107,7 +107,7 @@ fun LoginScreen() {
 
                     coroutineScope.launch {
                         try {
-                            val user = ApiRequest(emailState.value, passwordState.value)
+                            val user = AuthenticationRequestBody(emailState.value, passwordState.value)
                             val response = RetrofitInstance.api.authenticateUser(user).await()
                             token.value = response.data.token
                             Toast.makeText(context, "Usuário valido e autenticado", Toast.LENGTH_SHORT).show()

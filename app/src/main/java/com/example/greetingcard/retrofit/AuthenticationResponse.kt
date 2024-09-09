@@ -1,10 +1,10 @@
 package com.example.greetingcard.retrofit
 
-data class ApiResponse(
-    val data: Data
+data class AuthenticationResponse(
+    val data: AuthenticationDataResponse
 )
 
-data class Data(
+data class AuthenticationDataResponse(
     val token: String,
     val user: User
 )
