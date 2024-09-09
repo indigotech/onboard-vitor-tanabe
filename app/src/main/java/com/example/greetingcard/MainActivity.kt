@@ -1,6 +1,7 @@
 package com.example.greetingcard
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,16 +17,25 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.greetingcard.retrofit.AuthenticationRequestBody
+import com.example.greetingcard.retrofit.AuthenticationResponse
+import com.example.greetingcard.retrofit.RetrofitInstance
 import com.example.greetingcard.ui.theme.GreetingCardTheme
+import kotlinx.coroutines.launch
+import retrofit2.await
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +57,17 @@ fun LoginScreen() {
     val emailErrorMessages = remember { mutableStateOf(listOf<String>()) }
     val passwordErrorMessages = remember { mutableStateOf(listOf<String>()) }
 
+    val authenticationErrorMessages = remember { mutableStateOf(listOf<String>()) }
+
+    val context = LocalContext.current
+
+    var auth by remember { mutableStateOf<AuthenticationResponse?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+
+    val token = remember {
+        mutableStateOf("")
+    }
+
     fun changeEmailState(email: String) {
         emailState.value = email
     }
@@ -60,7 +81,6 @@ fun LoginScreen() {
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Title()
@@ -81,8 +101,27 @@ fun LoginScreen() {
 
             LoginButton(onClick = {
                 emailErrorMessages.value = validateEmailInputs(emailState.value)
+                passwordErrorMessages.value = validatePasswordInputs(passwordState.value)
+
+                if(emailErrorMessages.value.isEmpty() && passwordErrorMessages.value.isEmpty()) {
+
+                    coroutineScope.launch {
+                        try {
+                            val user = AuthenticationRequestBody(emailState.value, passwordState.value)
+                            val response = RetrofitInstance.api.authenticateUser(user).await()
+                            token.value = response.data.token
+                            Toast.makeText(context, "Usuário valido e autenticado", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+
+                            val authErrors = mutableListOf<String>()
+                            authErrors.add("Usuario ou senha invalidos")
+                            authenticationErrorMessages.value = authErrors
+                        }
+                    }
+                }
             }
             )
+            ShowErrors(authenticationErrorMessages.value)
         }
     }
 }
