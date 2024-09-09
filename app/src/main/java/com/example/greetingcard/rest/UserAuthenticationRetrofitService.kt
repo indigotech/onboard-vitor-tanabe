@@ -28,5 +28,4 @@ interface UserAuthenticationRetrofitService {
     fun getInstance(): UserAuthenticationRetrofitService {
         return userAuthenticationRetrofitService
     }
-
 }
