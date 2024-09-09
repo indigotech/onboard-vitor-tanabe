@@ -1,4 +1,4 @@
-package com.example.greetingcard.screens
+package com.example.greetingcard.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
