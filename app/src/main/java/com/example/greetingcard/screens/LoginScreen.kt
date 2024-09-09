@@ -2,14 +2,17 @@ package com.example.greetingcard.screens
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -30,26 +34,31 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.greetingcard.retrofit.AuthenticationRequestBody
-import com.example.greetingcard.retrofit.AuthenticationResponse
-import com.example.greetingcard.retrofit.RetrofitInstance
+import com.example.greetingcard.model.AuthenticationRequestBody
+import com.example.greetingcard.model.AuthenticationResponse
+import com.example.greetingcard.rest.UserAuthenticationRetrofitService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.await
 
-fun UserAuthentication(email: String,
-                       password: String,
-                       coroutineScope: CoroutineScope,
-                       navController: NavHostController,
-                       context: Context,
-                       token: MutableState<String>,
-                       authenticationErrorMessages: MutableState<List<String>>) {
+fun UserAuthentication(
+    email: String,
+    password: String,
+    coroutineScope: CoroutineScope,
+    navController: NavHostController,
+    context: Context,
+    token: MutableState<String>,
+    authenticationErrorMessages: MutableState<List<String>>,
+) {
 
     coroutineScope.launch {
         try {
             val user =
                 AuthenticationRequestBody(email, password)
-            val response = RetrofitInstance.api.authenticateUser(user).await()
+            val response =
+                UserAuthenticationRetrofitService.RetrofitInstance.userAuthenticationRetrofitService.authenticateUser(
+                    user
+                ).await()
             token.value = response.data.token
             navController.navigate("UserListScreen")
             Toast.makeText(
@@ -127,25 +136,27 @@ fun LoginScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            LoginButton(onClick = {
-                emailErrorMessages.value = validateEmailInputs(emailState.value)
-                passwordErrorMessages.value = validatePasswordInputs(passwordState.value)
+            if (!isLoading.value) {
+                LoginButton(onClick = {
+                    emailErrorMessages.value = validateEmailInputs(emailState.value)
+                    passwordErrorMessages.value = validatePasswordInputs(passwordState.value)
 
-                if (emailErrorMessages.value.isEmpty() && passwordErrorMessages.value.isEmpty()) {
+                    if (emailErrorMessages.value.isEmpty() && passwordErrorMessages.value.isEmpty()) {
 
-                    UserAuthentication(
-                        email = emailState.value,
-                        password = passwordState.value,
-                        coroutineScope = coroutineScope,
-                        navController = navController,
-                        context = context,
-                        token = token,
-                        authenticationErrorMessages = authenticationErrorMessages
-                    )
+                        UserAuthentication(
+                            email = emailState.value,
+                            password = passwordState.value,
+                            coroutineScope = coroutineScope,
+                            navController = navController,
+                            context = context,
+                            token = token,
+                            authenticationErrorMessages = authenticationErrorMessages,
+                        )
 
+                    }
                 }
+                )
             }
-            )
             ShowErrors(authenticationErrorMessages.value)
         }
     }
