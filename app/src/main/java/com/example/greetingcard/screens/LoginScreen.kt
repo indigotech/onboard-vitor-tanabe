@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,9 +48,11 @@ fun UserAuthentication(
     context: Context,
     token: MutableState<String>,
     authenticationErrorMessages: MutableState<List<String>>,
+    isLoading: MutableState<Boolean>
 ) {
 
     coroutineScope.launch {
+        isLoading.value = true
         try {
             val user =
                 AuthenticationRequestBody(email, password)
@@ -71,6 +72,8 @@ fun UserAuthentication(
             val authErrors = mutableListOf<String>()
             authErrors.add("Usuario ou senha invalidos")
             authenticationErrorMessages.value = authErrors
+        } finally {
+            isLoading.value = false
         }
     }
 
@@ -93,6 +96,8 @@ fun LoginScreen(navController: NavHostController) {
     val token = remember {
         mutableStateOf("")
     }
+
+    val isLoading = remember { mutableStateOf(false) }
 
     fun changeEmailState(email: String) {
         emailState.value = email
@@ -151,12 +156,25 @@ fun LoginScreen(navController: NavHostController) {
                             context = context,
                             token = token,
                             authenticationErrorMessages = authenticationErrorMessages,
+                            isLoading = isLoading
                         )
 
                     }
                 }
                 )
             }
+
+            if (isLoading.value) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+
             ShowErrors(authenticationErrorMessages.value)
         }
     }
@@ -239,3 +257,4 @@ fun validatePasswordInputs(password: String): List<String> {
 
     return errors
 }
+
