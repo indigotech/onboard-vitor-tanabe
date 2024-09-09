@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import retrofit2.await
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavHostController) {
 
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
@@ -72,13 +72,23 @@ fun LoginScreen() {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            InputFields(emailState.value, "E-mail", KeyboardType.Email, onValueChange = { email -> changeEmailState(email) })
+            InputFields(
+                emailState.value,
+                "E-mail",
+                KeyboardType.Email,
+                onValueChange = { email -> changeEmailState(email) })
 
             ShowErrors(emailErrorMessages.value)
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            InputFields(passwordState.value, "Senha", KeyboardType.Password, onValueChange = { password -> changePasswordState(password) }, true)
+            InputFields(
+                passwordState.value,
+                "Senha",
+                KeyboardType.Password,
+                onValueChange = { password -> changePasswordState(password) },
+                true
+            )
 
             ShowErrors(passwordErrorMessages.value)
 
@@ -88,15 +98,20 @@ fun LoginScreen() {
                 emailErrorMessages.value = validateEmailInputs(emailState.value)
                 passwordErrorMessages.value = validatePasswordInputs(passwordState.value)
 
-                if(emailErrorMessages.value.isEmpty() && passwordErrorMessages.value.isEmpty()) {
+                if (emailErrorMessages.value.isEmpty() && passwordErrorMessages.value.isEmpty()) {
 
                     coroutineScope.launch {
                         try {
-                            val user = AuthenticationRequestBody(emailState.value, passwordState.value)
+                            val user =
+                                AuthenticationRequestBody(emailState.value, passwordState.value)
                             val response = RetrofitInstance.api.authenticateUser(user).await()
                             token.value = response.data.token
-
-                            Toast.makeText(context, "Usuário valido e autenticado", Toast.LENGTH_SHORT).show()
+                            navController.navigate("UserListScreen")
+                            Toast.makeText(
+                                context,
+                                "Usuário valido e autenticado",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } catch (e: Exception) {
 
                             val authErrors = mutableListOf<String>()
