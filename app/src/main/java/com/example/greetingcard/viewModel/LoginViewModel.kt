@@ -1,6 +1,5 @@
 package com.example.greetingcard.viewModel
 
-import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 import retrofit2.await
 
 
-class LoginScreenViewModel : ViewModel() {
+class LoginViewModel : ViewModel() {
 
     private val _emailState = mutableStateOf("")
     val emailState: MutableState<String> get() = _emailState
