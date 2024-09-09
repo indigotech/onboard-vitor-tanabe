@@ -1,5 +1,6 @@
 package com.example.greetingcard.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,8 +33,39 @@ import androidx.navigation.NavHostController
 import com.example.greetingcard.retrofit.AuthenticationRequestBody
 import com.example.greetingcard.retrofit.AuthenticationResponse
 import com.example.greetingcard.retrofit.RetrofitInstance
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.await
+
+fun UserAuthentication(email: String,
+                       password: String,
+                       coroutineScope: CoroutineScope,
+                       navController: NavHostController,
+                       context: Context,
+                       token: MutableState<String>,
+                       authenticationErrorMessages: MutableState<List<String>>) {
+
+    coroutineScope.launch {
+        try {
+            val user =
+                AuthenticationRequestBody(email, password)
+            val response = RetrofitInstance.api.authenticateUser(user).await()
+            token.value = response.data.token
+            navController.navigate("UserListScreen")
+            Toast.makeText(
+                context,
+                "Usuário valido e autenticado",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+
+            val authErrors = mutableListOf<String>()
+            authErrors.add("Usuario ou senha invalidos")
+            authenticationErrorMessages.value = authErrors
+        }
+    }
+
+}
 
 @Composable
 fun LoginScreen(navController: NavHostController) {
@@ -100,25 +133,16 @@ fun LoginScreen(navController: NavHostController) {
 
                 if (emailErrorMessages.value.isEmpty() && passwordErrorMessages.value.isEmpty()) {
 
-                    coroutineScope.launch {
-                        try {
-                            val user =
-                                AuthenticationRequestBody(emailState.value, passwordState.value)
-                            val response = RetrofitInstance.api.authenticateUser(user).await()
-                            token.value = response.data.token
-                            navController.navigate("UserListScreen")
-                            Toast.makeText(
-                                context,
-                                "Usuário valido e autenticado",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } catch (e: Exception) {
+                    UserAuthentication(
+                        email = emailState.value,
+                        password = passwordState.value,
+                        coroutineScope = coroutineScope,
+                        navController = navController,
+                        context = context,
+                        token = token,
+                        authenticationErrorMessages = authenticationErrorMessages
+                    )
 
-                            val authErrors = mutableListOf<String>()
-                            authErrors.add("Usuario ou senha invalidos")
-                            authenticationErrorMessages.value = authErrors
-                        }
-                    }
                 }
             }
             )
