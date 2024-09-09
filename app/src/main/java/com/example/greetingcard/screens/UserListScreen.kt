@@ -6,9 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 
 @Composable
-fun SuccessScreen() {
+fun UserListScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -18,7 +19,7 @@ fun SuccessScreen() {
     ) {
         Text("Login Successful!", style = MaterialTheme.typography.headlineLarge)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { /* Handle any action on success, if needed */ }) {
+        Button(onClick = { navController.navigate("Login") }) {
             Text("Continue")
         }
     }

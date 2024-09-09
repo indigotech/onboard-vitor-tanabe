@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.greetingcard.retrofit.AuthenticationRequestBody
 import com.example.greetingcard.retrofit.AuthenticationResponse
 import com.example.greetingcard.retrofit.RetrofitInstance
@@ -94,6 +95,7 @@ fun LoginScreen() {
                             val user = AuthenticationRequestBody(emailState.value, passwordState.value)
                             val response = RetrofitInstance.api.authenticateUser(user).await()
                             token.value = response.data.token
+
                             Toast.makeText(context, "Usuário valido e autenticado", Toast.LENGTH_SHORT).show()
                         } catch (e: Exception) {
 
