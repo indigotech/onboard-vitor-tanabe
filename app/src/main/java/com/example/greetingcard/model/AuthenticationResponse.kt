@@ -16,6 +16,7 @@ data class UserAuthentication(
 )
 =======
     val user: User
+<<<<<<< HEAD
 )
 
 data class User(
@@ -27,3 +28,6 @@ data class User(
     val role: String
 )
 >>>>>>> 829ad66 (readjusting project architecture)
+=======
+)
+>>>>>>> 003ac35 (refactor:mvvm architecture)

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 package com.example.greetingcard.view
 
 import androidx.compose.foundation.layout.Column
@@ -69,6 +70,9 @@ private fun UserItem(userListItem: UserListItem) {
 }
 =======
 package com.example.greetingcard.screens
+=======
+package com.example.greetingcard.view
+>>>>>>> 003ac35 (refactor:mvvm architecture)
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -100,5 +104,9 @@ fun UserListScreen(navController: NavHostController) {
             Text("Continue")
         }
     }
+<<<<<<< HEAD
 }
 >>>>>>> 5e0a393 (viewmodelscope dependecies)
+=======
+}
+>>>>>>> 003ac35 (refactor:mvvm architecture)
