@@ -1,6 +1,7 @@
 package com.example.greetingcard.repository
 
 import com.example.greetingcard.model.AuthenticationRequestBody
+<<<<<<< HEAD
 import com.example.greetingcard.model.UserListItem
 import com.example.greetingcard.rest.UserRetrofitService
 import retrofit2.await
@@ -19,13 +20,28 @@ class UserRepository private constructor() {
             }
         }
     }
+=======
+import com.example.greetingcard.rest.UserAuthenticationRetrofitService
+import retrofit2.await
+
+class UserRepository {
+
+    private var token: String? = null
+>>>>>>> a2e96cb (creating repository to pass token)
 
     suspend fun authenticateUser(email: String, password: String): Result<String> {
         return try {
             val user = AuthenticationRequestBody(email, password)
+<<<<<<< HEAD
             val response = UserRetrofitService
                 .userRetrofitService
                 .authenticateUser(user)
+=======
+            val response = UserAuthenticationRetrofitService
+                .userAuthenticationRetrofitService
+                .authenticateUser(user).await()
+
+>>>>>>> a2e96cb (creating repository to pass token)
             val authToken = response.data.token
             token = authToken
             Result.success(authToken)
@@ -33,6 +49,7 @@ class UserRepository private constructor() {
             Result.failure(e)
         }
     }
+<<<<<<< HEAD
 
     suspend fun loadUsers(): Result<List<UserListItem>> {
         return try {
@@ -45,3 +62,6 @@ class UserRepository private constructor() {
     }
 
 }
+=======
+}
+>>>>>>> a2e96cb (creating repository to pass token)

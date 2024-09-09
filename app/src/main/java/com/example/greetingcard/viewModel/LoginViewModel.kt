@@ -27,6 +27,7 @@ class LoginViewModel : ViewModel() {
         passwordState.value = password
 =======
 import com.example.greetingcard.model.AuthenticationRequestBody
+import com.example.greetingcard.repository.UserRepository
 import com.example.greetingcard.rest.UserAuthenticationRetrofitService
 import kotlinx.coroutines.launch
 import retrofit2.await
@@ -46,6 +47,8 @@ class LoginViewModel : ViewModel() {
     val authenticationErrorMessages: MutableState<List<String>> get() = _authenticationErrorMessages
     private val _isLoading = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading
+
+    val userRepository = UserRepository()
 
     fun updateEmailInput(email: String) {
         _emailState.value = email
@@ -120,19 +123,18 @@ class LoginViewModel : ViewModel() {
     }
 
 
-    fun authenticateUser(
-        navController: NavHostController
-    ) {
+    fun authenticateUser(navController: NavHostController) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val user = AuthenticationRequestBody(_emailState.value, _passwordState.value)
-                UserAuthenticationRetrofitService
-                    .userAuthenticationRetrofitService
-                    .authenticateUser(user).await()
-                navController.navigate("UserListScreen")
+                val result = userRepository.authenticateUser(_emailState.value, _passwordState.value)
+                result.onSuccess { token ->
+                    navController.navigate("UserListScreen")
+                }.onFailure {
+                    _authenticationErrorMessages.value = listOf("Usuário ou senha inválidos")
+                }
             } catch (e: Exception) {
-                _authenticationErrorMessages.value = listOf("Usuário ou senha inválidos")
+                _authenticationErrorMessages.value = listOf("Erro inesperado, tente novamente")
             } finally {
                 _isLoading.value = false
             }
