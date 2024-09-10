@@ -81,6 +81,4 @@ fun NewUserScreen(navHostController: NavHostController) {
 
         }
     }
-
 }
-
