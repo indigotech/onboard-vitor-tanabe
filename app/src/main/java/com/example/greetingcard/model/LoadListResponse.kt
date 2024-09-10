@@ -5,5 +5,5 @@ data class LoadListResponse(
 )
 
 data class LoadListDataResponse(
-    val node: List<User>
+    val nodes: List<User>
 )

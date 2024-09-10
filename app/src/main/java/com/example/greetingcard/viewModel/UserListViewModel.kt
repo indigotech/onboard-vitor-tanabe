@@ -8,9 +8,9 @@ import com.example.greetingcard.model.User
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 
-class UserListViewModel() : ViewModel() {
+class UserListViewModel : ViewModel() {
 
-    val userRepository = UserRepository()
+    private val userRepository = UserRepository.getInstance()
 
     private val _isLoading = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading
@@ -44,5 +44,4 @@ class UserListViewModel() : ViewModel() {
             }
         }
     }
-
 }
