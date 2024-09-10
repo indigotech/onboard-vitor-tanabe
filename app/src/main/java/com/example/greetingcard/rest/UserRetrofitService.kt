@@ -3,18 +3,27 @@ package com.example.greetingcard.rest
 import com.example.greetingcard.model.AuthenticationRequestBody
 import com.example.greetingcard.model.AuthenticationResponse
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.example.greetingcard.model.LoadListResponse
 =======
 >>>>>>> b2ba40f (list comming from repository)
+=======
+import com.example.greetingcard.model.LoadListResponse
+>>>>>>> 38bd94d (feat:userList)
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 <<<<<<< HEAD
+<<<<<<< HEAD
 import retrofit2.http.GET
 import retrofit2.http.Header
 =======
 >>>>>>> b2ba40f (list comming from repository)
+=======
+import retrofit2.http.GET
+import retrofit2.http.Header
+>>>>>>> 38bd94d (feat:userList)
 import retrofit2.http.POST
 
 interface UserRetrofitService {
@@ -27,8 +36,13 @@ interface UserRetrofitService {
 =======
     fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
 
+<<<<<<< HEAD
     
 >>>>>>> b2ba40f (list comming from repository)
+=======
+    @GET("users")
+    fun loadUsers(@Header("Authorization") token: String): Call<LoadListResponse>
+>>>>>>> 38bd94d (feat:userList)
 
     companion object RetrofitInstance {
 

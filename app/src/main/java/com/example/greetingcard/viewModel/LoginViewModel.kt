@@ -33,10 +33,9 @@ import com.example.greetingcard.model.AuthenticationRequestBody
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 
-
 class LoginViewModel : ViewModel() {
 
-    val userRepository = UserRepository()
+    private val userRepository = UserRepository.getInstance()
 
     private val _emailState = mutableStateOf("")
     val emailState: MutableState<String> get() = _emailState

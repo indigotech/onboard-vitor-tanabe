@@ -28,14 +28,18 @@ import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 class UserListViewModel : ViewModel() {
     private val _users = mutableStateOf<List<User>>(emptyList())
     val users: State<List<User>> get() = _users
 >>>>>>> 7e715bb (mock user list)
 =======
 class UserListViewModel() : ViewModel() {
+=======
+class UserListViewModel : ViewModel() {
+>>>>>>> 38bd94d (feat:userList)
 
-    val userRepository = UserRepository()
+    private val userRepository = UserRepository.getInstance()
 
     private val _isLoading = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading
@@ -99,6 +103,5 @@ class UserListViewModel() : ViewModel() {
             }
         }
     }
-
 }
 >>>>>>> b2ba40f (list comming from repository)

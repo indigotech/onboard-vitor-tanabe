@@ -29,14 +29,29 @@ import com.example.greetingcard.rest.UserRetrofitService
 >>>>>>> b2ba40f (list comming from repository)
 import retrofit2.await
 
-class UserRepository {
+class UserRepository private constructor() {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     private var token: String? = null
 >>>>>>> a2e96cb (creating repository to pass token)
 =======
      var token: String? = null
 >>>>>>> b2ba40f (list comming from repository)
+=======
+     var token: String = ""
+
+    companion object {
+        @Volatile
+        private var instance: UserRepository? = null
+
+        fun getInstance(): UserRepository {
+            return instance ?: synchronized(this) {
+                instance ?: UserRepository().also { instance = it }
+            }
+        }
+    }
+>>>>>>> 38bd94d (feat:userList)
 
     suspend fun authenticateUser(email: String, password: String): Result<String> {
         return try {
@@ -75,6 +90,7 @@ class UserRepository {
 
     suspend fun loadUsers(): Result<List<User>> {
         return try {
+<<<<<<< HEAD
             val users = mutableListOf<User>()
 
             users.add(User("João", "joao@email.com"))
@@ -82,13 +98,21 @@ class UserRepository {
             users.add(User("Carlos", "carlos@email.com"))
 
 >>>>>>> b2ba40f (list comming from repository)
+=======
+            val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token).await()
+            val users = loadUserResponse.data.nodes
+>>>>>>> 38bd94d (feat:userList)
             Result.success(users)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
+<<<<<<< HEAD
 }
 =======
 }
 >>>>>>> a2e96cb (creating repository to pass token)
+=======
+}
+>>>>>>> 38bd94d (feat:userList)
