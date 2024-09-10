@@ -30,6 +30,4 @@ interface UserRetrofitService {
                 .create(UserRetrofitService::class.java)
         }
     }
-
-
 }
