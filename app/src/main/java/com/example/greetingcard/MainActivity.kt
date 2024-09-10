@@ -16,6 +16,7 @@ import com.example.greetingcard.view.UserListScreen
 >>>>>>> 003ac35 (refactor:mvvm architecture)
 import com.example.greetingcard.ui.theme.GreetingCardTheme
 import com.example.greetingcard.view.LoginScreen
+import com.example.greetingcard.view.NewUserScreen
 import com.example.greetingcard.view.UserListScreen
 =======
 import com.example.greetingcard.ui.theme.GreetingCardTheme
@@ -41,5 +42,6 @@ fun MyApp() {
     NavHost(navController = navController, startDestination = "Login" ) {
         composable(route = "Login") { LoginScreen(navController) }
         composable(route = "UserListScreen") { UserListScreen(navController) }
+        composable(route = "NewUserScreen") { NewUserScreen(navController) }
     }
 }
