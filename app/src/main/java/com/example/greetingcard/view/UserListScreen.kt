@@ -113,7 +113,6 @@ fun UserListScreen(navController: NavHostController) {
     val userList by viewModel.userList
     val loadErrorMessages by viewModel.loadErrorMessages
 
-
     Scaffold(modifier = Modifier.padding(32.dp)) { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(24.dp))

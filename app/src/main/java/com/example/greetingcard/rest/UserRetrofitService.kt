@@ -57,8 +57,11 @@ interface UserRetrofitService {
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> b2ba40f (list comming from repository)
+=======
+>>>>>>> bfce5a7 (removing extra blank lines)
 }

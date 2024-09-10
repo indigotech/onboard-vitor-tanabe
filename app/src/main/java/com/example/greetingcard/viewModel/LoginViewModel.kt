@@ -145,5 +145,9 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
+<<<<<<< HEAD
 }
 >>>>>>> 7e715bb (mock user list)
+=======
+}
+>>>>>>> bfce5a7 (removing extra blank lines)

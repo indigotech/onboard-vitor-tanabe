@@ -93,7 +93,6 @@ class UserListViewModel : ViewModel() {
 =======
                     _userList.value = userListResult
                 }.onFailure {
-
                     _loadErrorMessages.value = listOf("Erro ao carregar usuários")
                 }
             } catch (e: Exception) {
