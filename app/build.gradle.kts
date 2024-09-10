@@ -101,7 +101,15 @@ dependencies {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+    // PAGING
+    implementation("androidx.paging:paging-compose:3.2.0")
+    implementation("androidx.paging:paging-runtime:3.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
+>>>>>>> 276749d (pagination dependencies)
 
 =======
 >>>>>>> 5e0a393 (viewmodelscope dependecies)
