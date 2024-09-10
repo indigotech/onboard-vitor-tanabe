@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.greetingcard.ui.theme.GreetingCardTheme
 import com.example.greetingcard.view.LoginScreen
+import com.example.greetingcard.view.NewUserScreen
 import com.example.greetingcard.view.UserListScreen
 
 class MainActivity : ComponentActivity() {
@@ -30,5 +31,6 @@ fun MyApp() {
     NavHost(navController = navController, startDestination = "Login" ) {
         composable(route = "Login") { LoginScreen(navController) }
         composable(route = "UserListScreen") { UserListScreen(navController) }
+        composable(route = "NewUserScreen") { NewUserScreen(navController) }
     }
 }
