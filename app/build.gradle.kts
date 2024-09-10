@@ -58,9 +58,13 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
 <<<<<<< HEAD
+<<<<<<< HEAD
     implementation(libs.androidx.runtime.livedata)
 =======
 >>>>>>> 5e0a393 (viewmodelscope dependecies)
+=======
+    implementation(libs.androidx.runtime.livedata)
+>>>>>>> b2ba40f (list comming from repository)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

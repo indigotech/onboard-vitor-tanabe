@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 
@@ -27,28 +28,33 @@ class LoginViewModel : ViewModel() {
         passwordState.value = password
 =======
 import com.example.greetingcard.model.AuthenticationRequestBody
+=======
+>>>>>>> b2ba40f (list comming from repository)
 import com.example.greetingcard.repository.UserRepository
-import com.example.greetingcard.rest.UserAuthenticationRetrofitService
 import kotlinx.coroutines.launch
-import retrofit2.await
 
 
 class LoginViewModel : ViewModel() {
 
+    val userRepository = UserRepository()
+
     private val _emailState = mutableStateOf("")
     val emailState: MutableState<String> get() = _emailState
+
     private val _passwordState = mutableStateOf("")
     val passwordState: MutableState<String> get() = _passwordState
+
     private val _emailErrorMessages = mutableStateOf(listOf<String>())
     val emailErrorMessages: MutableState<List<String>> get() = _emailErrorMessages
+
     private val _passwordErrorMessages = mutableStateOf(listOf<String>())
     val passwordErrorMessages: MutableState<List<String>> get() = _passwordErrorMessages
+
     private val _authenticationErrorMessages = mutableStateOf(listOf<String>())
     val authenticationErrorMessages: MutableState<List<String>> get() = _authenticationErrorMessages
+
     private val _isLoading = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading
-
-    val userRepository = UserRepository()
 
     fun updateEmailInput(email: String) {
         _emailState.value = email
