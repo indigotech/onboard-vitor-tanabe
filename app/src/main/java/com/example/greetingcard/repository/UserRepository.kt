@@ -136,6 +136,7 @@ class UserRepository private constructor() {
             pagingSourceFactory = { UserPagingSource(token) }
         ).flow
     }
+<<<<<<< HEAD
 
 //    suspend fun loadUsers(): Result<List<User>> {
 //        return try {
@@ -149,3 +150,6 @@ class UserRepository private constructor() {
 
 }
 >>>>>>> 986e103 (pagination)
+=======
+}
+>>>>>>> 05807af (removing extra lines and comentaries)

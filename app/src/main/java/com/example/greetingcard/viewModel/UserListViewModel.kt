@@ -51,9 +51,6 @@ class UserListViewModel : ViewModel() {
     private val _isLoading = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading
 
-//    private val _userList = mutableStateOf<List<User>>(emptyList())
-//    val userList: MutableState<List<User>> get() = _userList
-
     private val _userList = MutableStateFlow<PagingData<User>>(PagingData.empty())
     val userList: StateFlow<PagingData<User>> = _userList
 
@@ -65,6 +62,7 @@ class UserListViewModel : ViewModel() {
         loadUsers()
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     private fun loadUsers() {
 <<<<<<< HEAD
@@ -107,6 +105,8 @@ class UserListViewModel : ViewModel() {
                     _loadErrorMessages.value = listOf("Erro ao carregar usuários")
 =======
 
+=======
+>>>>>>> 05807af (removing extra lines and comentaries)
     fun loadUsers() {
         viewModelScope.launch {
             userRepository.loadUsers()
@@ -117,24 +117,5 @@ class UserListViewModel : ViewModel() {
                 }
         }
     }
-
-//    private fun loadUsers() {
-//        viewModelScope.launch {
-//            _isLoading.value = true
-//            try {
-//                val result = userRepository.loadUsers()
-//
-//                result.onSuccess { userListResult ->
-//                    _userList.value = userListResult
-//                }.onFailure {
-//                    _loadErrorMessages.value = listOf("Erro ao carregar usuários")
-//                }
-//            } catch (e: Exception) {
-//                _loadErrorMessages.value = listOf("Erro inesperado, tente novamente")
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
 }
 >>>>>>> b2ba40f (list comming from repository)
