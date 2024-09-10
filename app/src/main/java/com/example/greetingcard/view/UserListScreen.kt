@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +37,12 @@ fun UserListScreen(navController: NavHostController) {
     val isLoading by viewModel.isLoading
     val loadErrorMessages by viewModel.loadErrorMessages
 
-    Scaffold(modifier = Modifier.padding(32.dp)) { padding ->
+    Scaffold(modifier = Modifier.padding(32.dp),
+        floatingActionButton = {
+        FloatingActionButton(onClick = { navController.navigate("NewUserScreen") }) {
+            Text("+")
+        }
+    }) { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Lista de Usuários")
