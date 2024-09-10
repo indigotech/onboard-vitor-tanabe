@@ -48,15 +48,4 @@ class UserRepository private constructor() {
             pagingSourceFactory = { UserPagingSource(token) }
         ).flow
     }
-
-//    suspend fun loadUsers(): Result<List<User>> {
-//        return try {
-//            val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token).await()
-//            val users = loadUserResponse.data.nodes
-//            Result.success(users)
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
-//    }
-
 }
