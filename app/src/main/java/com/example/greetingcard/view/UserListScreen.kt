@@ -159,7 +159,6 @@ fun UserItem(user: User) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = "ID: ${user.id}")
         Text(text = "Nome: ${user.name}")
         Text(text = "Email: ${user.email}")
     }
