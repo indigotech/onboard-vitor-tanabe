@@ -5,9 +5,20 @@ import com.example.greetingcard.model.User
 import com.example.greetingcard.rest.UserRetrofitService
 import retrofit2.await
 
-class UserRepository {
+class UserRepository private constructor() {
 
-     var token: String? = null
+     var token: String = ""
+
+    companion object {
+        @Volatile
+        private var instance: UserRepository? = null
+
+        fun getInstance(): UserRepository {
+            return instance ?: synchronized(this) {
+                instance ?: UserRepository().also { instance = it }
+            }
+        }
+    }
 
     suspend fun authenticateUser(email: String, password: String): Result<String> {
         return try {
@@ -25,12 +36,8 @@ class UserRepository {
 
     suspend fun loadUsers(): Result<List<User>> {
         return try {
-            val users = mutableListOf<User>()
-
-            users.add(User("João", "joao@email.com"))
-            users.add(User("Maria", "maria@email.com"))
-            users.add(User("Carlos", "carlos@email.com"))
-
+            val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token).await()
+            val users = loadUserResponse.data.nodes
             Result.success(users)
         } catch (e: Exception) {
             Result.failure(e)

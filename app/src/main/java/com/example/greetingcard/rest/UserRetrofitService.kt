@@ -2,17 +2,21 @@ package com.example.greetingcard.rest
 
 import com.example.greetingcard.model.AuthenticationRequestBody
 import com.example.greetingcard.model.AuthenticationResponse
+import com.example.greetingcard.model.LoadListResponse
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface UserRetrofitService {
     @POST("authenticate")
     fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
 
-    
+    @GET("users")
+    fun loadUsers(@Header("Authorization") token: String): Call<LoadListResponse>
 
     companion object RetrofitInstance {
 
