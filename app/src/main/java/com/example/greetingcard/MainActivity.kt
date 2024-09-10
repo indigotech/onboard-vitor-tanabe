@@ -24,17 +24,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun MyApp() {
-
     val navController = rememberNavController()
-
     NavHost(navController = navController, startDestination = "Login" ) {
-
         composable(route = "Login") { LoginScreen(navController) }
         composable(route = "UserListScreen") { UserListScreen(navController) }
-
     }
-
 }
