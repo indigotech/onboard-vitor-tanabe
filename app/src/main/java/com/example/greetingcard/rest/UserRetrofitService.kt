@@ -8,24 +8,24 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface UserAuthenticationRetrofitService {
+interface UserRetrofitService {
     @POST("authenticate")
     fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
+
+    
 
     companion object RetrofitInstance {
 
         private const val BASE_URL = "https://template-onboarding-node-sjz6wnaoia-uc.a.run.app/"
 
-        val userAuthenticationRetrofitService: UserAuthenticationRetrofitService by lazy {
+        val userRetrofitService: UserRetrofitService by lazy {
             Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(UserAuthenticationRetrofitService::class.java)
+                .create(UserRetrofitService::class.java)
         }
     }
 
-    fun getInstance(): UserAuthenticationRetrofitService {
-        return userAuthenticationRetrofitService
-    }
+
 }
