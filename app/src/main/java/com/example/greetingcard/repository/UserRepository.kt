@@ -1,10 +1,19 @@
 package com.example.greetingcard.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.greetingcard.model.AuthenticationRequestBody
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.example.greetingcard.model.UserListItem
+=======
+import com.example.greetingcard.model.User
+import com.example.greetingcard.model.UserPagingSource
+>>>>>>> 986e103 (pagination)
 import com.example.greetingcard.rest.UserRetrofitService
+import kotlinx.coroutines.flow.Flow
 import retrofit2.await
 
 class UserRepository private constructor() {
@@ -88,6 +97,7 @@ class UserRepository private constructor() {
             val users = loadUserResponse.data.nodes
 =======
 
+<<<<<<< HEAD
     suspend fun loadUsers(): Result<List<User>> {
         return try {
 <<<<<<< HEAD
@@ -116,3 +126,26 @@ class UserRepository private constructor() {
 =======
 }
 >>>>>>> 38bd94d (feat:userList)
+=======
+    suspend fun loadUsers(): Flow<PagingData<User>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { UserPagingSource(token) }
+        ).flow
+    }
+
+//    suspend fun loadUsers(): Result<List<User>> {
+//        return try {
+//            val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token).await()
+//            val users = loadUserResponse.data.nodes
+//            Result.success(users)
+//        } catch (e: Exception) {
+//            Result.failure(e)
+//        }
+//    }
+
+}
+>>>>>>> 986e103 (pagination)
