@@ -25,6 +25,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 >>>>>>> 38bd94d (feat:userList)
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface UserRetrofitService {
     @POST("authenticate")
@@ -32,6 +33,7 @@ interface UserRetrofitService {
     suspend fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): AuthenticationResponse
 
     @GET("users")
+<<<<<<< HEAD
     suspend fun loadUsers(@Header("Authorization") token: String): LoadListResponse
 =======
     fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
@@ -43,6 +45,9 @@ interface UserRetrofitService {
     @GET("users")
     fun loadUsers(@Header("Authorization") token: String): Call<LoadListResponse>
 >>>>>>> 38bd94d (feat:userList)
+=======
+    fun loadUsers(@Header("Authorization") token: String, @Query("offset") offset: Int): Call<LoadListResponse>
+>>>>>>> 062313b (fix infinite pagination)
 
     companion object RetrofitInstance {
 
