@@ -46,7 +46,4 @@ class NewUserViewModel : ViewModel() {
     fun updateRoleInput(role: String) {
         _roleState.value = role
     }
-
-
-
 }
