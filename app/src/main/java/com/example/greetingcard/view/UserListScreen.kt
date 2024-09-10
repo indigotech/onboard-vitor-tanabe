@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,14 +19,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+<<<<<<< HEAD
 import com.example.greetingcard.model.UserListItem
+=======
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.example.greetingcard.model.User
+>>>>>>> 986e103 (pagination)
 import com.example.greetingcard.viewModel.UserListViewModel
 
 @Composable
 fun UserListScreen(navController: NavHostController) {
     val viewModel: UserListViewModel = viewModel()
+
+    val userPagingItems = viewModel.userList.collectAsLazyPagingItems()
+
     val isLoading by viewModel.isLoading
-    val userList by viewModel.userList
     val loadErrorMessages by viewModel.loadErrorMessages
 
     Scaffold(modifier = Modifier.padding(32.dp)) { padding ->
@@ -46,14 +52,18 @@ fun UserListScreen(navController: NavHostController) {
                     contentPadding = padding,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(userList) { userListItem ->
-                        UserItem(userListItem = userListItem)
+                    items(userPagingItems.itemCount) { index ->
+                        val user = userPagingItems[index]
+                        user?.let {
+                            UserItem(user = it)
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 private fun UserItem(userListItem: UserListItem) {
@@ -62,7 +72,8 @@ private fun UserItem(userListItem: UserListItem) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = "Nome: ${userListItem.name}")
-        Text(text = "Email: ${userListItem.email}")
+        Text(text = "ID: ${user.id}")
+        Text(text = "Nome: ${user.name}")
+        Text(text = "Email: ${user.email}")
     }
 }

@@ -4,8 +4,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+<<<<<<< HEAD
 import com.example.greetingcard.model.UserListItem
+=======
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.greetingcard.model.User
+>>>>>>> 986e103 (pagination)
 import com.example.greetingcard.repository.UserRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class UserListViewModel : ViewModel() {
@@ -19,22 +27,33 @@ class UserListViewModel : ViewModel() {
         loadUsers()
     }
 
-    private fun loadUsers() {
-        viewModelScope.launch {
-            isLoading.value = true
-            try {
-                val result = userRepository.loadUsers()
 
-                result.onSuccess { userListResult ->
-                    userList.value = userListResult
-                }.onFailure {
-                    loadErrorMessages.value = listOf("Erro ao carregar usuários")
+    fun loadUsers() {
+        viewModelScope.launch {
+            userRepository.loadUsers()
+                .cachedIn(viewModelScope)
+                .collect { pagingData ->
+                    _userList.value = pagingData
                 }
-            } catch (e: Exception) {
-                loadErrorMessages.value = listOf("Erro inesperado, tente novamente")
-            } finally {
-                isLoading.value = false
-            }
         }
     }
+
+//    private fun loadUsers() {
+//        viewModelScope.launch {
+//            _isLoading.value = true
+//            try {
+//                val result = userRepository.loadUsers()
+//
+//                result.onSuccess { userListResult ->
+//                    _userList.value = userListResult
+//                }.onFailure {
+//                    _loadErrorMessages.value = listOf("Erro ao carregar usuários")
+//                }
+//            } catch (e: Exception) {
+//                _loadErrorMessages.value = listOf("Erro inesperado, tente novamente")
+//            } finally {
+//                _isLoading.value = false
+//            }
+//        }
+//    }
 }
