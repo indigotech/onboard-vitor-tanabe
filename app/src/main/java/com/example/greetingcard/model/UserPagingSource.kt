@@ -13,13 +13,13 @@ class UserPagingSource(
         return try {
             val currentPage = params.key ?: 0
 
-            val response = UserRetrofitService.userRetrofitService.loadUsers(token).await()
+            val response = UserRetrofitService.userRetrofitService.loadUsers(token, currentPage).await()
             val users = response.data.nodes
 
             LoadResult.Page(
                 data = users,
-                prevKey = if (currentPage == 0) null else currentPage - 1,
-                nextKey = if (users.isEmpty()) null else currentPage + 1
+                prevKey = if (currentPage == 0) null else currentPage - 20,
+                nextKey = if (users.isEmpty()) null else currentPage + 20
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

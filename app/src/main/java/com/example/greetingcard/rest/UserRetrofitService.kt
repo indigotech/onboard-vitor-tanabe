@@ -10,13 +10,14 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface UserRetrofitService {
     @POST("authenticate")
     fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
 
     @GET("users")
-    fun loadUsers(@Header("Authorization") token: String): Call<LoadListResponse>
+    fun loadUsers(@Header("Authorization") token: String, @Query("offset") offset: Int): Call<LoadListResponse>
 
     companion object RetrofitInstance {
 
