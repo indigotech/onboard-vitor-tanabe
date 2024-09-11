@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.greetingcard.model.AuthenticationRequestBody
+import com.example.greetingcard.model.NewUserRequest
 import com.example.greetingcard.model.User
 import com.example.greetingcard.model.UserPagingSource
 import com.example.greetingcard.rest.UserRetrofitService
@@ -47,5 +48,13 @@ class UserRepository private constructor() {
             ),
             pagingSourceFactory = { UserPagingSource(token) }
         ).flow
+    }
+
+    suspend fun newUser(newUserRequest: NewUserRequest) {
+        try {
+            UserRetrofitService.userRetrofitService.newUser(token, newUserRequest)
+        } catch (e: Exception) {
+            throw Exception("Erro ao cadastrar usuário")
+        }
     }
 }
