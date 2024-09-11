@@ -56,7 +56,7 @@ fun UserListScreen(navController: NavHostController) {
 }
 
 @Composable
-fun UserItem(userListItem: UserListItem) {
+private fun UserItem(userListItem: UserListItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
