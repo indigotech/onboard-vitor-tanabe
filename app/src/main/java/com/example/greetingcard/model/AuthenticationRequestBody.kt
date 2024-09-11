@@ -1,4 +1,4 @@
-package com.example.greetingcard.retrofit
+package com.example.greetingcard.model
 
 data class AuthenticationRequestBody(
     val email: String,
