@@ -13,10 +13,10 @@ import retrofit2.http.POST
 
 interface UserRetrofitService {
     @POST("authenticate")
-    fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): Call<AuthenticationResponse>
+    suspend fun authenticateUser(@Body authenticationRequestBody: AuthenticationRequestBody): AuthenticationResponse
 
     @GET("users")
-    fun loadUsers(@Header("Authorization") token: String): Call<LoadListResponse>
+    suspend fun loadUsers(@Header("Authorization") token: String): LoadListResponse
 
     companion object RetrofitInstance {
 

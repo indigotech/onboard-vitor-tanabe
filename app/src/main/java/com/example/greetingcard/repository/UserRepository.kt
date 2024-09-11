@@ -25,7 +25,7 @@ class UserRepository private constructor() {
             val user = AuthenticationRequestBody(email, password)
             val response = UserRetrofitService
                 .userRetrofitService
-                .authenticateUser(user).await()
+                .authenticateUser(user)
             val authToken = response.data.token
             token = authToken
             Result.success(authToken)
@@ -36,7 +36,7 @@ class UserRepository private constructor() {
 
     suspend fun loadUsers(): Result<List<UserListItem>> {
         return try {
-            val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token).await()
+            val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token)
             val users = loadUserResponse.data.nodes
             Result.success(users)
         } catch (e: Exception) {
