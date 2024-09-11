@@ -253,4 +253,26 @@ class NewUserViewModel : ViewModel() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addNewUser() {
+        val newUser = NewUserRequest(
+            name = nameState.value,
+            email = emailState.value,
+            phone = phoneState.value,
+            password = passwordState.value,
+            role = Roles.USER,
+            birthDate = birthDateState.value.toString()
+        )
+
+        viewModelScope.launch {
+            isLoading.value = true
+            try {
+                userRepository.newUser(newUser)
+            } catch (e: Exception) {
+                addNewUserErrorMessages.value = listOf("Erro ao cadastrar usuário")
+            } finally {
+                isLoading.value = false
+            }
+        }
+    }
 }

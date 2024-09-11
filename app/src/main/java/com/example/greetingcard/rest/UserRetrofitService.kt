@@ -20,7 +20,6 @@ interface UserRetrofitService {
     @GET("users")
     suspend fun loadUsers(@Header("Authorization") token: String, @Query("offset") offset: Int): LoadListResponse
 
-
     @POST("users")
     suspend fun newUser(@Header("Authorization") token: String, @Body newUserRequest: NewUserRequest)
     companion object RetrofitInstance {
