@@ -166,4 +166,91 @@ class NewUserViewModel : ViewModel() {
             }
         }
     }
+
+    fun validateAndSetNameErrors() {
+        val errors = mutableListOf<String>()
+        val twoWordsRegex = nameState.value.trim().split("\\s+".toRegex())
+
+        if (twoWordsRegex.size < 2) {
+            errors.add("Nome deve ser completo")
+        }
+        nameErrorMessages.value = errors
+    }
+
+    fun validateAndSetEmailErrors() {
+        val errors = mutableListOf<String>()
+        val email = emailState.value
+
+        if (email.isEmpty()) {
+            errors.add("O campo de e-mail está vazio")
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            errors.add("E-mail inválido")
+        }
+        emailErrorMessages.value = errors
+    }
+
+    fun validateAndSetPhoneErrors() {
+        val errors = mutableListOf<String>()
+
+        val phone = phoneState.value
+
+        if (phone.isEmpty()) {
+            errors.add("O campo de senha está vazio")
+        } else if (phone.length < 10 || phone.length > 11) {
+            errors.add("O número deve ter entre 10-11 dígitos")
+        } else if (!phone.all { it.isDigit() }) {
+            errors.add("O número deve conter apenas dígitos")
+        }
+
+        phoneErrorMessages.value = errors
+    }
+
+    fun validateAndSetPasswordErrors() {
+        val errors = mutableListOf<String>()
+        val password = passwordState.value
+        val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
+
+        if (password.isEmpty()) {
+            errors.add("O campo de senha está vazio")
+        } else if (password.length < 7) {
+            errors.add("A senha deve ter pelo menos 7 caracteres")
+        } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
+            errors.add("A senha deve conter pelo menos uma letra e um número")
+        }
+        passwordErrorMessages.value = errors
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun validateAndSetBirthDateErrors() {
+        val errors = mutableListOf<String>()
+        val birthDate = birthDateState.value
+
+        if (birthDate.isAfter(LocalDate.now())) {
+            errors.add("A data de nascimento não pode ser no futuro")
+        }
+        birthDateErrorMessages.value = errors
+    }
+
+    fun validateAndSetRoleErrors() {
+
+        val errors = mutableListOf<String>()
+
+        if(roleState.value == Roles.NOROLE) {
+            errors.add("Necessário selecionar um cargo")
+        }
+
+        roleErrorMessages.value = errors
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun validateAndSetAllErrors() {
+        validateAndSetNameErrors()
+        validateAndSetEmailErrors()
+        validateAndSetPasswordErrors()
+        validateAndSetPhoneErrors()
+        validateAndSetRoleErrors()
+        validateAndSetBirthDateErrors()
+
+    }
+
 }
