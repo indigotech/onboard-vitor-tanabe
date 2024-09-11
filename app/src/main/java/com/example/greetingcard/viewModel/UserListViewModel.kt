@@ -11,15 +11,9 @@ import kotlinx.coroutines.launch
 class UserListViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-
-    private val _isLoading = mutableStateOf(false)
-    val isLoading: MutableState<Boolean> get() = _isLoading
-
-    private val _userList = mutableStateOf<List<UserListItem>>(emptyList())
-    val userList: MutableState<List<UserListItem>> get() = _userList
-
-    private val _loadErrorMessages = mutableStateOf(listOf<String>())
-    val loadErrorMessages: MutableState<List<String>> get() = _loadErrorMessages
+    val isLoading: MutableState<Boolean> get() = mutableStateOf(false)
+    val userList: MutableState<List<UserListItem>> get() = mutableStateOf<List<UserListItem>>(emptyList())
+    val loadErrorMessages: MutableState<List<String>> get() = mutableStateOf(listOf<String>())
 
     init {
         loadUsers()
@@ -27,19 +21,19 @@ class UserListViewModel : ViewModel() {
 
     private fun loadUsers() {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoading.value = true
             try {
                 val result = userRepository.loadUsers()
 
                 result.onSuccess { userListResult ->
-                    _userList.value = userListResult
+                    userList.value = userListResult
                 }.onFailure {
-                    _loadErrorMessages.value = listOf("Erro ao carregar usuários")
+                    loadErrorMessages.value = listOf("Erro ao carregar usuários")
                 }
             } catch (e: Exception) {
-                _loadErrorMessages.value = listOf("Erro inesperado, tente novamente")
+                loadErrorMessages.value = listOf("Erro inesperado, tente novamente")
             } finally {
-                _isLoading.value = false
+                isLoading.value = false
             }
         }
     }
