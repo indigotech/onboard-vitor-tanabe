@@ -1,49 +1,142 @@
 package com.example.greetingcard.viewModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.greetingcard.model.Roles
 import com.example.greetingcard.repository.UserRepository
+import java.time.LocalDate
 
 class NewUserViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
+    val nameState = mutableStateOf("")
+    val emailState = mutableStateOf("")
+    val phoneState = mutableStateOf("")
 
-    private val _nameState = mutableStateOf("")
-    val nameState: MutableState<String> get() = _nameState
+    @RequiresApi(Build.VERSION_CODES.O)
+    val birthDateState = mutableStateOf(LocalDate.now())
+    val passwordState = mutableStateOf("")
+    val roleState = mutableStateOf(Roles.NOROLE)
 
-    private val _emailState = mutableStateOf("")
-    val emailState: MutableState<String> get() = _emailState
-
-    private val _phoneState = mutableStateOf("")
-    val phoneState: MutableState<String> get() = _phoneState
-
-    private val _birthDateState = mutableStateOf("")
-    val birthDateState: MutableState<String> get() = _birthDateState
-
-    private val _passwordState = mutableStateOf("")
-    val passwordState: MutableState<String> get() = _passwordState
-
-    private val _roleState = mutableStateOf("")
-    val roleState: MutableState<String> get() = _roleState
-
+    val nameErrorMessages = mutableStateOf(listOf<String>())
+    val emailErrorMessages = mutableStateOf(listOf<String>())
+    val phoneErrorMessages = mutableStateOf(listOf<String>())
+    val birthDateErrorMessages = mutableStateOf(listOf<String>())
+    val passwordErrorMessages = mutableStateOf(listOf<String>())
+    val roleErrorMessages = mutableStateOf(listOf<String>())
 
     fun updateNameInput(name: String) {
-        _nameState.value = name
+        nameState.value = name
     }
+
     fun updateEmailInput(email: String) {
-        _emailState.value = email
+        emailState.value = email
     }
+
     fun updatePhoneInput(phone: String) {
-        _phoneState.value = phone
+        phoneState.value = phone
     }
-    fun updateBirthDateInput(birthDate: String) {
-        _birthDateState.value = birthDate
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateBirthDateInput(birthDate: LocalDate) {
+        birthDateState.value = birthDate
     }
+
     fun updatePasswordInput(password: String) {
-        _passwordState.value = password
+        passwordState.value = password
     }
-    fun updateRoleInput(role: String) {
-        _roleState.value = role
+
+    fun updateRoleInput(role: Roles) {
+        roleState.value = role
     }
+
+    fun validateAndSetNameErrors() {
+        val errors = mutableListOf<String>()
+        val twoWordsRegex = nameState.value.trim().split("\\s+".toRegex())
+
+        if (twoWordsRegex.size < 2) {
+            errors.add("Nome deve ser completo")
+        }
+        nameErrorMessages.value = errors
+    }
+
+    fun validateAndSetEmailErrors() {
+        val errors = mutableListOf<String>()
+        val email = emailState.value
+
+        if (email.isEmpty()) {
+            errors.add("O campo de e-mail está vazio")
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            errors.add("E-mail inválido")
+        }
+        emailErrorMessages.value = errors
+    }
+
+    fun validateAndSetPhoneErrors() {
+        val errors = mutableListOf<String>()
+
+        val phone = phoneState.value
+
+        if (phone.isEmpty()) {
+            errors.add("O campo de senha está vazio")
+        } else if (phone.length < 10 || phone.length > 11) {
+            errors.add("O número deve ter entre 10-11 dígitos")
+        } else if (!phone.all { it.isDigit() }) {
+            errors.add("O número deve conter apenas dígitos")
+        }
+
+        phoneErrorMessages.value = errors
+    }
+
+    fun validateAndSetPasswordErrors() {
+        val errors = mutableListOf<String>()
+        val password = passwordState.value
+        val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
+
+        if (password.isEmpty()) {
+            errors.add("O campo de senha está vazio")
+        } else if (password.length < 7) {
+            errors.add("A senha deve ter pelo menos 7 caracteres")
+        } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
+            errors.add("A senha deve conter pelo menos uma letra e um número")
+        }
+        passwordErrorMessages.value = errors
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun validateAndSetBirthDateErrors() {
+        val errors = mutableListOf<String>()
+        val birthDate = birthDateState.value
+
+        if (birthDate.isAfter(LocalDate.now())) {
+            errors.add("A data de nascimento não pode ser no futuro")
+        }
+        birthDateErrorMessages.value = errors
+    }
+
+    fun validateAndSetRoleErrors() {
+
+        val errors = mutableListOf<String>()
+
+        if(roleState.value == Roles.NOROLE) {
+            errors.add("Necessário selecionar um cargo")
+        }
+
+        roleErrorMessages.value = errors
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun validateAndSetAllErrors() {
+        validateAndSetNameErrors()
+        validateAndSetEmailErrors()
+        validateAndSetPasswordErrors()
+        validateAndSetPhoneErrors()
+        validateAndSetRoleErrors()
+        validateAndSetBirthDateErrors()
+
+    }
+
 }

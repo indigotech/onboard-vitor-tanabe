@@ -91,4 +91,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
 
+    //
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
+
 }
