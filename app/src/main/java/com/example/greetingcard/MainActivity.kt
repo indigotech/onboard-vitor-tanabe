@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.greetingcard.screens.LoginScreen
-import com.example.greetingcard.screens.UserListScreen
 import com.example.greetingcard.ui.theme.GreetingCardTheme
+import com.example.greetingcard.view.LoginScreen
+import com.example.greetingcard.view.UserListScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,14 +26,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp() {
-
     val navController = rememberNavController()
-
     NavHost(navController = navController, startDestination = "Login" ) {
-
         composable(route = "Login") { LoginScreen(navController) }
         composable(route = "UserListScreen") { UserListScreen(navController) }
-
     }
-
 }
