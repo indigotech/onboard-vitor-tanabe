@@ -68,4 +68,15 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    val nav_version = "2.8.0"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    implementation("androidx.navigation:navigation-fragment:$nav_version")
+    implementation("androidx.navigation:navigation-ui:$nav_version")
+
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
+
+    androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+
 }
