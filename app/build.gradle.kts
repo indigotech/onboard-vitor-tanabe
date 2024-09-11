@@ -111,10 +111,16 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
 >>>>>>> 276749d (pagination dependencies)
 
+<<<<<<< HEAD
 =======
 >>>>>>> 5e0a393 (viewmodelscope dependecies)
 =======
 
 
 >>>>>>> 38bd94d (feat:userList)
+=======
+    //
+    implementation("io.github.vanpra.compose-material-dialogs:datetime:0.9.0")
+
+>>>>>>> 4c6e95f (validation other types of inputs)
 }
