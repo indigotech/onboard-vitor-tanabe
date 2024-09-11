@@ -5,5 +5,10 @@ data class LoadListResponse(
 )
 
 data class LoadListDataResponse(
-    val nodes: List<User>
+    val nodes: List<UserListItem>
+)
+
+data class UserListItem(
+    val name: String,
+    val email: String
 )

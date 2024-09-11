@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.greetingcard.model.User
+import com.example.greetingcard.model.UserListItem
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 
@@ -15,8 +15,8 @@ class UserListViewModel : ViewModel() {
     private val _isLoading = mutableStateOf(false)
     val isLoading: MutableState<Boolean> get() = _isLoading
 
-    private val _userList = mutableStateOf<List<User>>(emptyList())
-    val userList: MutableState<List<User>> get() = _userList
+    private val _userList = mutableStateOf<List<UserListItem>>(emptyList())
+    val userList: MutableState<List<UserListItem>> get() = _userList
 
     private val _loadErrorMessages = mutableStateOf(listOf<String>())
     val loadErrorMessages: MutableState<List<String>> get() = _loadErrorMessages

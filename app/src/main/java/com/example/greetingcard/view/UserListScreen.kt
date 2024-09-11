@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.greetingcard.model.User
+import com.example.greetingcard.model.UserListItem
 import com.example.greetingcard.viewModel.UserListViewModel
 
 @Composable
@@ -46,8 +46,8 @@ fun UserListScreen(navController: NavHostController) {
                     contentPadding = padding,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(userList) { user ->
-                        UserItem(user = user)
+                    items(userList) { userListItem ->
+                        UserItem(userListItem = userListItem)
                     }
                 }
             }
@@ -56,13 +56,13 @@ fun UserListScreen(navController: NavHostController) {
 }
 
 @Composable
-fun UserItem(user: User) {
+fun UserItem(userListItem: UserListItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(text = "Nome: ${user.name}")
-        Text(text = "Email: ${user.email}")
+        Text(text = "Nome: ${userListItem.name}")
+        Text(text = "Email: ${userListItem.email}")
     }
 }

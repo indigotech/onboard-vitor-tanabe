@@ -1,7 +1,7 @@
 package com.example.greetingcard.repository
 
 import com.example.greetingcard.model.AuthenticationRequestBody
-import com.example.greetingcard.model.User
+import com.example.greetingcard.model.UserListItem
 import com.example.greetingcard.rest.UserRetrofitService
 import retrofit2.await
 
@@ -34,7 +34,7 @@ class UserRepository private constructor() {
         }
     }
 
-    suspend fun loadUsers(): Result<List<User>> {
+    suspend fun loadUsers(): Result<List<UserListItem>> {
         return try {
             val loadUserResponse = UserRetrofitService.userRetrofitService.loadUsers(token).await()
             val users = loadUserResponse.data.nodes

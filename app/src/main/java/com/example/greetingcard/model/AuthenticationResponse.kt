@@ -6,5 +6,10 @@ data class AuthenticationResponse(
 
 data class AuthenticationDataResponse(
     val token: String,
-    val user: User
+    val userAuthentication: UserAuthentication
+)
+
+data class UserAuthentication(
+    val name: String,
+    val email: String
 )
