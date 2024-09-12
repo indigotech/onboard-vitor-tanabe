@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.greetingcard.model.AuthenticationRequestBody
+import com.example.greetingcard.model.LoadUserResponse
 import com.example.greetingcard.model.NewUserRequest
 import com.example.greetingcard.model.User
 import com.example.greetingcard.model.UserPagingSource
@@ -55,6 +56,15 @@ class UserRepository private constructor() {
             UserRetrofitService.userRetrofitService.newUser(token, newUserRequest)
         } catch (e: Exception) {
             throw Exception("Erro ao cadastrar usuário")
+        }
+    }
+
+    suspend fun loadUserDetail(userId: String): LoadUserResponse {
+        try {
+            val user = UserRetrofitService.userRetrofitService.loadUserDetail(token, userId)
+            return user
+        } catch (e: Exception) {
+            throw Exception("Erro ao carregar usuário")
         }
     }
 }
