@@ -5,31 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-<<<<<<< HEAD
-<<<<<<< HEAD
-import com.example.greetingcard.repository.UserRepository
-import kotlinx.coroutines.launch
-
-class LoginViewModel : ViewModel() {
-
-    private val userRepository = UserRepository.getInstance()
-    val emailState: MutableState<String> get() = mutableStateOf("")
-    val passwordState: MutableState<String> get() = mutableStateOf("")
-    val emailErrorMessages: MutableState<List<String>> get() = mutableStateOf(listOf<String>())
-    val passwordErrorMessages: MutableState<List<String>> get() = mutableStateOf(listOf<String>())
-    val authenticationErrorMessages: MutableState<List<String>> get() = mutableStateOf(listOf<String>())
-    val isLoading: MutableState<Boolean> get() = mutableStateOf(false)
-
-    fun updateEmailInput(email: String) {
-        emailState.value = email
-    }
-
-    fun updatePasswordInput(password: String) {
-        passwordState.value = password
-=======
-import com.example.greetingcard.model.AuthenticationRequestBody
-=======
->>>>>>> b2ba40f (list comming from repository)
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 
@@ -61,36 +36,23 @@ class LoginViewModel : ViewModel() {
 
     fun updatePasswordInput(password: String) {
         _passwordState.value = password
->>>>>>> 7e715bb (mock user list)
     }
 
     fun validateAndSetEmailErrors() {
         val errors = mutableListOf<String>()
-<<<<<<< HEAD
-        val email = emailState.value
-=======
         val email = _emailState.value
->>>>>>> 7e715bb (mock user list)
 
         if (email.isEmpty()) {
             errors.add("O campo de e-mail está vazio")
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             errors.add("E-mail inválido")
         }
-<<<<<<< HEAD
-        emailErrorMessages.value = errors
-=======
         _emailErrorMessages.value = errors
->>>>>>> 7e715bb (mock user list)
     }
 
     fun validateAndSetPasswordErrors() {
         val errors = mutableListOf<String>()
-<<<<<<< HEAD
-        val password = passwordState.value
-=======
         val password = _passwordState.value
->>>>>>> 7e715bb (mock user list)
         val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
 
         if (password.isEmpty()) {
@@ -100,30 +62,6 @@ class LoginViewModel : ViewModel() {
         } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
             errors.add("A senha deve conter pelo menos uma letra e um número")
         }
-<<<<<<< HEAD
-        passwordErrorMessages.value = errors
-    }
-
-
-    fun authenticateUser(navController: NavHostController) {
-        viewModelScope.launch {
-            isLoading.value = true
-            try {
-                val result = userRepository.authenticateUser(emailState.value, passwordState.value)
-                result.onSuccess { token ->
-                    navController.navigate("UserListScreen")
-                }.onFailure {
-                    authenticationErrorMessages.value = listOf("Usuário ou senha inválidos")
-                }
-            } catch (e: Exception) {
-                authenticationErrorMessages.value = listOf("Erro inesperado, tente novamente")
-            } finally {
-                isLoading.value = false
-            }
-        }
-    }
-}
-=======
         _passwordErrorMessages.value = errors
     }
 
@@ -145,9 +83,4 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
-<<<<<<< HEAD
 }
->>>>>>> 7e715bb (mock user list)
-=======
-}
->>>>>>> bfce5a7 (removing extra blank lines)

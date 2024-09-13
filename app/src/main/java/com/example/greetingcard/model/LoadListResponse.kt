@@ -5,18 +5,11 @@ data class LoadListResponse(
 )
 
 data class LoadListDataResponse(
-<<<<<<< HEAD
-<<<<<<< HEAD
-    val nodes: List<UserListItem>
+    val nodes: List<User>
 )
 
-data class UserListItem(
+data class LoadListUserItem(
+    val id: String,
     val name: String,
     val email: String
-=======
-    val node: List<User>
->>>>>>> a2e96cb (creating repository to pass token)
-=======
-    val nodes: List<User>
->>>>>>> 38bd94d (feat:userList)
 )
