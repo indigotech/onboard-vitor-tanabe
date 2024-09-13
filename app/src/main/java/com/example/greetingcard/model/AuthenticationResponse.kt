@@ -6,28 +6,10 @@ data class AuthenticationResponse(
 
 data class AuthenticationDataResponse(
     val token: String,
-<<<<<<< HEAD
-    val userAuthentication: UserAuthentication
+    val user: UserAuthentication
 )
 
 data class UserAuthentication(
     val name: String,
     val email: String
 )
-=======
-    val user: User
-<<<<<<< HEAD
-)
-
-data class User(
-    val id: String,
-    val name: String,
-    val email: String,
-    val birthDate: String,
-    val phone: String,
-    val role: String
-)
->>>>>>> 829ad66 (readjusting project architecture)
-=======
-)
->>>>>>> 003ac35 (refactor:mvvm architecture)
