@@ -15,7 +15,7 @@ fun ButtonDefault(buttonText: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier.height(44.dp),
-        colors = ButtonDefaults.buttonColors(Color.Cyan)
+        colors = ButtonDefaults.buttonColors(Color.LightGray)
     ) {
         ButtonText(buttonText)
     }

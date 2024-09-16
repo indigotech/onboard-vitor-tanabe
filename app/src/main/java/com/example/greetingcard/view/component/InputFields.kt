@@ -48,7 +48,6 @@ fun InputFields(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
                 .border(1.dp, Color(0xFF777777), RoundedCornerShape(16.dp)),
             keyboardOptions = KeyboardOptions(
                 keyboardType = type
