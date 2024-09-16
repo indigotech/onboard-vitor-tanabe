@@ -32,6 +32,7 @@ class NewUserViewModel : ViewModel() {
     var emailState by mutableStateOf("")
     var phoneState by mutableStateOf("")
     var birthDateState by mutableStateOf("")
+    var birthDateFormatted by mutableStateOf("")
     var passwordState by mutableStateOf("")
     var roleState by mutableStateOf<Roles?>(null)
 
@@ -42,7 +43,6 @@ class NewUserViewModel : ViewModel() {
     var passwordErrorMessages by mutableStateOf(listOf<String>())
     var roleErrorMessages by mutableStateOf(listOf<String>())
     var addNewUserErrorMessages by mutableStateOf(listOf<String>())
-    var birthDateLocalDate by mutableStateOf<LocalDate?>(null)
 
     var isLoading by mutableStateOf(false)
 
@@ -131,19 +131,32 @@ class NewUserViewModel : ViewModel() {
 
     private fun validateAndSetBirthDateErrors() {
 
-
-        val day = birthDateState.substring(0, 2).toInt()
-        val month = birthDateState.substring(2, 4).toInt()
-        val year = birthDateState.substring(4, 8).toInt()
-
-        val date = LocalDate.of(year,month,day)
-
         val errors = mutableListOf<String>()
 
-        if (!date.isBefore(LocalDate.now())) {
-            errors.add("A data deve ser uma data passada.")
+        if (birthDateState.length != 8) {
+            errors.add("A data deve estar no formato dd/MM/yyyy.")
         } else {
-            birthDateLocalDate = date
+            val day = birthDateState.substring(0, 2).toIntOrNull()
+            val month = birthDateState.substring(2, 4).toIntOrNull()
+            val year = birthDateState.substring(4, 8).toIntOrNull()
+
+            if (day == null || month == null || year == null) {
+                errors.add("A data contém valores inválidos.")
+            } else {
+                val date = try {
+                    LocalDate.of(year, month, day)
+                } catch (e: DateTimeException) {
+                    null
+                }
+
+                if (date == null) {
+                    errors.add("Data inválida.")
+                } else if (!date.isBefore(LocalDate.now())) {
+                    errors.add("A data deve estar no passado.")
+                } else {
+                    birthDateFormatted = date.toString()
+                }
+            }
         }
 
         birthDateErrorMessages = errors
@@ -167,7 +180,7 @@ class NewUserViewModel : ViewModel() {
             phone = phoneState,
             password = passwordState,
             role = Roles.USER,
-            birthDate = birthDateLocalDate.toString()
+            birthDate = "1999-03-03"
         )
 
         viewModelScope.launch {

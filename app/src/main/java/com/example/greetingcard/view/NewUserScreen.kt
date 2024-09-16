@@ -111,11 +111,9 @@ private fun NewUserForm(navController: NavHostController) {
             buttonText = "Cadastrar",
             onClick = {
                 viewModel.validateAndSetAllErrors()
-                viewModel.addNewUser()
-
-                Toast.makeText(context, viewModel.birthDateLocalDate.toString() ,Toast.LENGTH_LONG).show()
 
                 if(viewModel.noErrors()) {
+                    viewModel.addNewUser()
                     navController.navigate("UserListScreen")
                     Toast.makeText(context, "Sucesso ao Cadastrar usuário" ,Toast.LENGTH_LONG).show()
                 } else {
