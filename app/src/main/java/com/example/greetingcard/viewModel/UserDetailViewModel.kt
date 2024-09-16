@@ -1,10 +1,10 @@
 package com.example.greetingcard.viewModel
 
 import android.os.Build
-import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.greetingcard.model.Roles
@@ -17,40 +17,35 @@ import java.time.format.DateTimeParseException
 class UserDetailViewModel() : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-    val nameState = mutableStateOf("")
-    val emailState = mutableStateOf("")
-    val phoneState = mutableStateOf("")
-    @RequiresApi(Build.VERSION_CODES.O)
-    val birthDateState = mutableStateOf("")
-    val roleState = mutableStateOf(Roles.NOROLE)
-    val isLoading = mutableStateOf(false)
+    var nameState by mutableStateOf("")
+    var emailState by mutableStateOf("")
+    var phoneState by mutableStateOf("")
+    var birthDateState by mutableStateOf("")
+    var roleState by mutableStateOf<Roles?>(null)
 
-    val loadUserDetailErrorMessages = mutableStateOf(listOf<String>())
+    var isLoading by mutableStateOf(false)
+
+    var loadUserDetailErrorMessages by mutableStateOf(listOf<String>())
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun loadUserDetail(userIdState: String) {
-
         viewModelScope.launch {
-            isLoading.value = true
+            isLoading = true
             try {
                 val user = userRepository.loadUserDetail(userIdState)
-                nameState.value = user.data.name
-                emailState.value = user.data.email
-                phoneState.value = user.data.phone
-                birthDateState.value = formatDate(user.data.birthDate)
-                if(user.data.role !in Roles.values()) {
-                    roleState.value = Roles.NOROLE
-                } else {
-                    roleState.value = user.data.role
-                }
-
+                nameState = user.data.name
+                emailState = user.data.email
+                phoneState = user.data.phone
+                birthDateState = formatDate(user.data.birthDate)
+                roleState = user.data.role
             } catch (e: Exception) {
-                loadUserDetailErrorMessages.value = listOf("Erro ao carregar usuário")
+                loadUserDetailErrorMessages = listOf(e.message ?: "Erro ao carregar usuário")
             } finally {
-                isLoading.value = false
+                isLoading = false
             }
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun formatDate(dateString: String): String {
@@ -64,5 +59,4 @@ class UserDetailViewModel() : ViewModel() {
             "Data inválida"
         }
     }
-
 }

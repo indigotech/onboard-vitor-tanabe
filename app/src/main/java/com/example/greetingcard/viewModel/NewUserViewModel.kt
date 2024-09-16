@@ -2,90 +2,104 @@ package com.example.greetingcard.viewModel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.greetingcard.model.NewUserRequest
 import com.example.greetingcard.model.Roles
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 class NewUserViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-    val nameState = mutableStateOf("")
-    val emailState = mutableStateOf("")
-    val phoneState = mutableStateOf("")
+    var nameState by mutableStateOf("")
+    var emailState by mutableStateOf("")
+    var phoneState by mutableStateOf("")
+    var birthDateState by mutableStateOf("")
+    var passwordState by mutableStateOf("")
+    var roleState by mutableStateOf<Roles?>(null)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    val birthDateState = mutableStateOf(LocalDate.now())
-    val passwordState = mutableStateOf("")
-    val roleState = mutableStateOf(Roles.NOROLE)
+    var nameErrorMessages by mutableStateOf(listOf<String>())
+    var emailErrorMessages by mutableStateOf(listOf<String>())
+    var phoneErrorMessages by mutableStateOf(listOf<String>())
+    var birthDateErrorMessages by mutableStateOf(listOf<String>())
+    var passwordErrorMessages by mutableStateOf(listOf<String>())
+    var roleErrorMessages by mutableStateOf(listOf<String>())
+    var addNewUserErrorMessages by mutableStateOf(listOf<String>())
 
-    val nameErrorMessages = mutableStateOf(listOf<String>())
-    val emailErrorMessages = mutableStateOf(listOf<String>())
-    val phoneErrorMessages = mutableStateOf(listOf<String>())
-    val birthDateErrorMessages = mutableStateOf(listOf<String>())
-    val passwordErrorMessages = mutableStateOf(listOf<String>())
-    val roleErrorMessages = mutableStateOf(listOf<String>())
-    val addNewUserErrorMessages = mutableStateOf(listOf<String>())
-
-    val isLoading= mutableStateOf(false)
+    var isLoading by mutableStateOf(false)
 
     fun updateNameInput(name: String) {
-        nameState.value = name
+        nameState = name
     }
 
     fun updateEmailInput(email: String) {
-        emailState.value = email
+        emailState = email
     }
 
     fun updatePhoneInput(phone: String) {
-        phoneState.value = phone
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun updateBirthDateInput(birthDate: LocalDate) {
-        birthDateState.value = birthDate
+        phoneState = phone
     }
 
     fun updatePasswordInput(password: String) {
-        passwordState.value = password
+        passwordState = password
+    }
+
+    fun updateBirthDateInput(birthDate: String) {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+        try {
+            val localDate = LocalDate.parse(birthDate, inputFormatter)
+            val formattedDate = localDate.format(outputFormatter)
+            birthDateState = formattedDate
+        } catch (e: DateTimeParseException) {
+            birthDateState = "Data inválida"
+        }
     }
 
     fun updateRoleInput(role: Roles) {
-        roleState.value = role
+        roleState = role
     }
 
-    fun validateAndSetNameErrors() {
+    private fun validateAndSetNameErrors() {
         val errors = mutableListOf<String>()
-        val twoWordsRegex = nameState.value.trim().split("\\s+".toRegex())
+        val twoWordsRegex = nameState.trim().split("\\s+".toRegex())
 
         if (twoWordsRegex.size < 2) {
             errors.add("Nome deve ser completo")
         }
-        nameErrorMessages.value = errors
+        nameErrorMessages = errors
     }
 
-    fun validateAndSetEmailErrors() {
+    private fun validateAndSetEmailErrors() {
         val errors = mutableListOf<String>()
-        val email = emailState.value
-
+        val email = emailState
         if (email.isEmpty()) {
             errors.add("O campo de e-mail está vazio")
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             errors.add("E-mail inválido")
         }
-        emailErrorMessages.value = errors
+        emailErrorMessages = errors
     }
 
-    fun validateAndSetPhoneErrors() {
+    private fun validateAndSetPhoneErrors() {
         val errors = mutableListOf<String>()
-
-        val phone = phoneState.value
-
+        val phone = phoneState
         if (phone.isEmpty()) {
             errors.add("O campo de senha está vazio")
         } else if (phone.length < 10 || phone.length > 11) {
@@ -93,13 +107,12 @@ class NewUserViewModel : ViewModel() {
         } else if (!phone.all { it.isDigit() }) {
             errors.add("O número deve conter apenas dígitos")
         }
-
-        phoneErrorMessages.value = errors
+        phoneErrorMessages = errors
     }
 
-    fun validateAndSetPasswordErrors() {
+    private fun validateAndSetPasswordErrors() {
         val errors = mutableListOf<String>()
-        val password = passwordState.value
+        val password = passwordState
         val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
 
         if (password.isEmpty()) {
@@ -109,29 +122,18 @@ class NewUserViewModel : ViewModel() {
         } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
             errors.add("A senha deve conter pelo menos uma letra e um número")
         }
-        passwordErrorMessages.value = errors
+        passwordErrorMessages = errors
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun validateAndSetBirthDateErrors() {
-        val errors = mutableListOf<String>()
-        val birthDate = birthDateState.value
-
-        if (birthDate.isAfter(LocalDate.now())) {
-            errors.add("A data de nascimento não pode ser no futuro")
-        }
-        birthDateErrorMessages.value = errors
-    }
-
-    fun validateAndSetRoleErrors() {
+    private fun validateAndSetRoleErrors() {
 
         val errors = mutableListOf<String>()
 
-        if(roleState.value == Roles.NOROLE) {
+        if (roleState != Roles.ADMIN || roleState != Roles.USER) {
             errors.add("Necessário selecionar um cargo")
         }
 
-        roleErrorMessages.value = errors
+        roleErrorMessages = errors
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -141,137 +143,27 @@ class NewUserViewModel : ViewModel() {
         validateAndSetPasswordErrors()
         validateAndSetPhoneErrors()
         validateAndSetRoleErrors()
-        validateAndSetBirthDateErrors()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addNewUser() {
         val newUser = NewUserRequest(
-            name = nameState.value,
-            email = emailState.value,
-            phone = phoneState.value,
-            password = passwordState.value,
+            name = nameState,
+            email = emailState,
+            phone = phoneState,
+            password = passwordState,
             role = Roles.USER,
-            birthDate = birthDateState.value.toString()
+            birthDate = birthDateState.toString()
         )
 
         viewModelScope.launch {
-            isLoading.value = true
+            isLoading = true
             try {
                 userRepository.newUser(newUser)
             } catch (e: Exception) {
-                addNewUserErrorMessages.value = listOf("Erro ao cadastrar usuário")
+                addNewUserErrorMessages = listOf("Erro ao cadastrar usuário")
             } finally {
-                isLoading.value = false
-            }
-        }
-    }
-
-    fun validateAndSetNameErrors() {
-        val errors = mutableListOf<String>()
-        val twoWordsRegex = nameState.value.trim().split("\\s+".toRegex())
-
-        if (twoWordsRegex.size < 2) {
-            errors.add("Nome deve ser completo")
-        }
-        nameErrorMessages.value = errors
-    }
-
-    fun validateAndSetEmailErrors() {
-        val errors = mutableListOf<String>()
-        val email = emailState.value
-
-        if (email.isEmpty()) {
-            errors.add("O campo de e-mail está vazio")
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            errors.add("E-mail inválido")
-        }
-        emailErrorMessages.value = errors
-    }
-
-    fun validateAndSetPhoneErrors() {
-        val errors = mutableListOf<String>()
-
-        val phone = phoneState.value
-
-        if (phone.isEmpty()) {
-            errors.add("O campo de senha está vazio")
-        } else if (phone.length < 10 || phone.length > 11) {
-            errors.add("O número deve ter entre 10-11 dígitos")
-        } else if (!phone.all { it.isDigit() }) {
-            errors.add("O número deve conter apenas dígitos")
-        }
-
-        phoneErrorMessages.value = errors
-    }
-
-    fun validateAndSetPasswordErrors() {
-        val errors = mutableListOf<String>()
-        val password = passwordState.value
-        val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
-
-        if (password.isEmpty()) {
-            errors.add("O campo de senha está vazio")
-        } else if (password.length < 7) {
-            errors.add("A senha deve ter pelo menos 7 caracteres")
-        } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
-            errors.add("A senha deve conter pelo menos uma letra e um número")
-        }
-        passwordErrorMessages.value = errors
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun validateAndSetBirthDateErrors() {
-        val errors = mutableListOf<String>()
-        val birthDate = birthDateState.value
-
-        if (birthDate.isAfter(LocalDate.now())) {
-            errors.add("A data de nascimento não pode ser no futuro")
-        }
-        birthDateErrorMessages.value = errors
-    }
-
-    fun validateAndSetRoleErrors() {
-
-        val errors = mutableListOf<String>()
-
-        if(roleState.value == Roles.NOROLE) {
-            errors.add("Necessário selecionar um cargo")
-        }
-
-        roleErrorMessages.value = errors
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun validateAndSetAllErrors() {
-        validateAndSetNameErrors()
-        validateAndSetEmailErrors()
-        validateAndSetPasswordErrors()
-        validateAndSetPhoneErrors()
-        validateAndSetRoleErrors()
-        validateAndSetBirthDateErrors()
-
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun addNewUser() {
-        val newUser = NewUserRequest(
-            name = nameState.value,
-            email = emailState.value,
-            phone = phoneState.value,
-            password = passwordState.value,
-            role = Roles.USER,
-            birthDate = birthDateState.value.toString()
-        )
-
-        viewModelScope.launch {
-            isLoading.value = true
-            try {
-                userRepository.newUser(newUser)
-            } catch (e: Exception) {
-                addNewUserErrorMessages.value = listOf("Erro ao cadastrar usuário")
-            } finally {
-                isLoading.value = false
+                isLoading = false
             }
         }
     }

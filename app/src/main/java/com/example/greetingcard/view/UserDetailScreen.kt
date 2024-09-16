@@ -16,15 +16,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.greetingcard.model.Roles
-import com.example.greetingcard.viewModel.NewUserViewModel
+import com.example.greetingcard.view.component.ShowErrors
 import com.example.greetingcard.viewModel.UserDetailViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -36,12 +34,6 @@ fun UserDetailScreen(
 ) {
     val viewModel: UserDetailViewModel = viewModel()
     viewModel.loadUserDetail(userId)
-    val nameState by viewModel.nameState
-    val emailState by viewModel.emailState
-    val phoneState by viewModel.phoneState
-    val birthDateState by viewModel.birthDateState
-    val roleState by viewModel.roleState
-    val loadUserDetailErrorMessages by viewModel.loadUserDetailErrorMessages
 
     Scaffold(
         topBar = {
@@ -61,22 +53,21 @@ fun UserDetailScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            if(loadUserDetailErrorMessages.isEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
+            if(viewModel.loadUserDetailErrorMessages.isEmpty()) {
                 Text(text = "ID: $userId", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Nome: $nameState", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Nome: ${viewModel.nameState}", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Email: $emailState", fontSize = 16.sp)
+                Text(text = "Email: ${viewModel.emailState}", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Data de Nascimento: $birthDateState", fontSize = 16.sp)
+                Text(text = "Data de Nascimento: ${viewModel.birthDateState}", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Telefone: $phoneState", fontSize = 16.sp)
+                Text(text = "Telefone: ${viewModel.phoneState}", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Cargo: $roleState", fontSize = 16.sp)
+                Text(text = "Cargo: ${viewModel.roleState}", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(24.dp))
             } else {
-                ShowErrors(loadUserDetailErrorMessages)
+                ShowErrors(viewModel.loadUserDetailErrorMessages)
             }
         }
     }
