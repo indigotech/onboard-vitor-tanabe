@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.greetingcard.model.Roles
+import com.example.greetingcard.view.component.ButtonDefault
 import com.example.greetingcard.view.component.InputFields
 import com.example.greetingcard.view.component.ShowErrors
 import com.example.greetingcard.view.component.TitleH1
@@ -107,7 +107,8 @@ private fun NewUserForm(navController: NavHostController) {
         ShowErrors(viewModel.roleErrorMessages)
         Spacer(modifier = Modifier.height(12.dp))
 
-        Button(
+        ButtonDefault(
+            buttonText = "Cadastrar",
             onClick = {
                 viewModel.validateAndSetAllErrors()
                 viewModel.addNewUser()
@@ -122,12 +123,7 @@ private fun NewUserForm(navController: NavHostController) {
                 }
 
             },
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-
-        ) {
-            Text(text = "Cadastrar")
-        }
+        )
         ShowErrors(viewModel.addNewUserErrorMessages)
     }
 }

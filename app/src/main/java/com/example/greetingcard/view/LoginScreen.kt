@@ -8,18 +8,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.greetingcard.view.component.ButtonDefault
 import com.example.greetingcard.view.component.InputFields
 import com.example.greetingcard.view.component.ShowErrors
 import com.example.greetingcard.view.component.TitleH1
@@ -56,7 +54,7 @@ fun LoginScreen(navController: NavHostController) {
             ShowErrors(viewModel.passwordErrorMessages)
             Spacer(modifier = Modifier.height(36.dp))
             if (!viewModel.isLoading) {
-                LoginButton(onClick = {
+                ButtonDefault("Entrar", onClick = {
                     viewModel.validateAndSetEmailErrors()
                     viewModel.validateAndSetPasswordErrors()
                     if (viewModel.emailErrorMessages.isEmpty() && viewModel.passwordErrorMessages.isEmpty()) {
@@ -78,9 +76,3 @@ fun LoginScreen(navController: NavHostController) {
     }
 }
 
-@Composable
-private fun LoginButton(onClick: () -> Unit) {
-    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
-        Text(fontSize = 20.sp, text = "Entrar")
-    }
-}
