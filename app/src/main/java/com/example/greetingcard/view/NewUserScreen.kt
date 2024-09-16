@@ -1,6 +1,7 @@
 package com.example.greetingcard.view
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -50,6 +52,7 @@ fun NewUserScreen(navController: NavHostController) {
 @Composable
 private fun NewUserForm(navController: NavHostController) {
     val viewModel: NewUserViewModel = viewModel()
+    val context = LocalContext.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,9 +96,12 @@ private fun NewUserForm(navController: NavHostController) {
             viewModel.birthDateState,
             "Data de Aniversário",
             KeyboardType.Number,
-            onValueChange = { birthDate -> viewModel.updateBirthDateInput(birthDate) }
+            onValueChange = { birthDate -> viewModel.updateBirthDateInput(birthDate) },
+            maxLength = 8,
+            isDateField = true,
         )
         ShowErrors(viewModel.birthDateErrorMessages)
+
         Spacer(modifier = Modifier.height(12.dp))
         UserRoleSelector(viewModel)
         ShowErrors(viewModel.roleErrorMessages)
@@ -104,11 +110,15 @@ private fun NewUserForm(navController: NavHostController) {
         Button(
             onClick = {
                 viewModel.validateAndSetAllErrors()
-
                 viewModel.addNewUser()
 
-                if(viewModel.addNewUserErrorMessages.isEmpty()) {
+                Toast.makeText(context, viewModel.birthDateLocalDate.toString() ,Toast.LENGTH_LONG).show()
+
+                if(viewModel.noErrors()) {
                     navController.navigate("UserListScreen")
+                    Toast.makeText(context, "Sucesso ao Cadastrar usuário" ,Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Erro ao Cadastrar usuário}" ,Toast.LENGTH_LONG).show()
                 }
 
             },

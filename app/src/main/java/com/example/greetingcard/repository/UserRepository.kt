@@ -55,10 +55,6 @@ class UserRepository private constructor() {
     suspend fun newUser(newUserRequest: NewUserRequest) {
         try {
             UserRetrofitService.userRetrofitService.newUser(token, newUserRequest)
-        } catch (e: IOException) {
-            throw Exception("Erro de rede ao cadastrar usuário: ${e.message}")
-        } catch (e: HttpException) {
-            throw Exception("Erro ao cadastrar usuário: ${e.message()}")
         } catch (e: Exception) {
             throw Exception("Erro desconhecido ao cadastrar usuário: ${e.message}")
         }

@@ -1,6 +1,7 @@
 package com.example.greetingcard.viewModel
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.DateTimeException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -40,6 +42,7 @@ class NewUserViewModel : ViewModel() {
     var passwordErrorMessages by mutableStateOf(listOf<String>())
     var roleErrorMessages by mutableStateOf(listOf<String>())
     var addNewUserErrorMessages by mutableStateOf(listOf<String>())
+    var birthDateLocalDate by mutableStateOf<LocalDate?>(null)
 
     var isLoading by mutableStateOf(false)
 
@@ -60,16 +63,7 @@ class NewUserViewModel : ViewModel() {
     }
 
     fun updateBirthDateInput(birthDate: String) {
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-
-        try {
-            val localDate = LocalDate.parse(birthDate, inputFormatter)
-            val formattedDate = localDate.format(outputFormatter)
-            birthDateState = formattedDate
-        } catch (e: DateTimeParseException) {
-            birthDateState = "Data inválida"
-        }
+        birthDateState = birthDate
     }
 
     fun updateRoleInput(role: Roles) {
@@ -126,14 +120,33 @@ class NewUserViewModel : ViewModel() {
     }
 
     private fun validateAndSetRoleErrors() {
-
         val errors = mutableListOf<String>()
 
-        if (roleState != Roles.ADMIN || roleState != Roles.USER) {
+        if (roleState == null || (roleState != Roles.ADMIN && roleState != Roles.USER)) {
             errors.add("Necessário selecionar um cargo")
         }
 
         roleErrorMessages = errors
+    }
+
+    private fun validateAndSetBirthDateErrors() {
+
+
+        val day = birthDateState.substring(0, 2).toInt()
+        val month = birthDateState.substring(2, 4).toInt()
+        val year = birthDateState.substring(4, 8).toInt()
+
+        val date = LocalDate.of(year,month,day)
+
+        val errors = mutableListOf<String>()
+
+        if (!date.isBefore(LocalDate.now())) {
+            errors.add("A data deve ser uma data passada.")
+        } else {
+            birthDateLocalDate = date
+        }
+
+        birthDateErrorMessages = errors
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -143,6 +156,7 @@ class NewUserViewModel : ViewModel() {
         validateAndSetPasswordErrors()
         validateAndSetPhoneErrors()
         validateAndSetRoleErrors()
+        validateAndSetBirthDateErrors()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -153,7 +167,7 @@ class NewUserViewModel : ViewModel() {
             phone = phoneState,
             password = passwordState,
             role = Roles.USER,
-            birthDate = birthDateState.toString()
+            birthDate = birthDateLocalDate.toString()
         )
 
         viewModelScope.launch {
@@ -166,5 +180,55 @@ class NewUserViewModel : ViewModel() {
                 isLoading = false
             }
         }
+    }
+
+    fun dateVisualTransformation(): VisualTransformation {
+        return VisualTransformation { text ->
+            val trimmedText = text.text.take(8)
+
+            val formattedText = buildString {
+                for (i in trimmedText.indices) {
+                    append(trimmedText[i])
+                    if (i == 1 || i == 3) {
+                        append("/")
+                    }
+                }
+            }
+
+            val offsetMapping = object : OffsetMapping {
+                override fun originalToTransformed(offset: Int): Int {
+                    return when {
+                        offset <= 1 -> offset
+                        offset <= 3 -> offset + 1
+                        offset <= 8 -> offset + 2
+                        else -> 10
+                    }
+                }
+
+                override fun transformedToOriginal(offset: Int): Int {
+                    return when {
+                        offset <= 2 -> offset
+                        offset <= 5 -> offset - 1
+                        offset <= 10 -> offset - 2
+                        else -> 8
+                    }
+                }
+            }
+            TransformedText(AnnotatedString(formattedText), offsetMapping)
+        }
+    }
+
+    fun noErrors(): Boolean {
+        if(nameErrorMessages.isEmpty() &&
+            emailErrorMessages.isEmpty() &&
+            phoneErrorMessages.isEmpty() &&
+            birthDateErrorMessages.isEmpty() &&
+            passwordErrorMessages.isEmpty() &&
+            roleErrorMessages.isEmpty() &&
+            addNewUserErrorMessages.isEmpty()
+            ) {
+            return true
+        }
+     return false
     }
 }
