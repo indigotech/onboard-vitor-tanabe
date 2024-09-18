@@ -3,6 +3,7 @@ package com.example.greetingcard.rest
 import com.example.greetingcard.model.AuthenticationRequestBody
 import com.example.greetingcard.model.AuthenticationResponse
 import com.example.greetingcard.model.LoadListResponse
+import com.example.greetingcard.model.NewUserRequest
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,6 +21,8 @@ interface UserRetrofitService {
     suspend fun loadUsers(@Header("Authorization") token: String, @Query("offset") offset: Int): LoadListResponse
 
 
+    @POST("users")
+    suspend fun newUser(@Header("Authorization") token: String, @Body newUserRequest: NewUserRequest)
     companion object RetrofitInstance {
 
         private const val BASE_URL = "https://template-onboarding-node-sjz6wnaoia-uc.a.run.app/"

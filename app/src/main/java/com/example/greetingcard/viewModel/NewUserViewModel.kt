@@ -5,8 +5,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.greetingcard.model.NewUserRequest
 import com.example.greetingcard.model.Roles
 import com.example.greetingcard.repository.UserRepository
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class NewUserViewModel : ViewModel() {
@@ -27,6 +30,9 @@ class NewUserViewModel : ViewModel() {
     val birthDateErrorMessages = mutableStateOf(listOf<String>())
     val passwordErrorMessages = mutableStateOf(listOf<String>())
     val roleErrorMessages = mutableStateOf(listOf<String>())
+    val addNewUserErrorMessages = mutableStateOf(listOf<String>())
+
+    val isLoading= mutableStateOf(false)
 
     fun updateNameInput(name: String) {
         nameState.value = name
@@ -136,7 +142,28 @@ class NewUserViewModel : ViewModel() {
         validateAndSetPhoneErrors()
         validateAndSetRoleErrors()
         validateAndSetBirthDateErrors()
-
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun addNewUser() {
+        val newUser = NewUserRequest(
+            name = nameState.value,
+            email = emailState.value,
+            phone = phoneState.value,
+            password = passwordState.value,
+            role = Roles.USER,
+            birthDate = birthDateState.value.toString()
+        )
+
+        viewModelScope.launch {
+            isLoading.value = true
+            try {
+                userRepository.newUser(newUser)
+            } catch (e: Exception) {
+                addNewUserErrorMessages.value = listOf("Erro ao cadastrar usuário")
+            } finally {
+                isLoading.value = false
+            }
+        }
+    }
 }

@@ -40,14 +40,14 @@ import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewUserScreen(navHostController: NavHostController) {
+fun NewUserScreen(navController: NavHostController) {
     Scaffold(modifier = Modifier.padding(32.dp)) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
             item {
-                NewUserForm()
+                NewUserForm(navController)
             }
         }
     }
@@ -55,7 +55,7 @@ fun NewUserScreen(navHostController: NavHostController) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun NewUserForm() {
+private fun NewUserForm(navController: NavHostController) {
     val viewModel: NewUserViewModel = viewModel()
     val nameState by viewModel.nameState
     val emailState by viewModel.emailState
@@ -110,6 +110,13 @@ private fun NewUserForm() {
         Button(
             onClick = {
                 viewModel.validateAndSetAllErrors()
+
+                viewModel.addNewUser()
+
+                if(viewModel.addNewUserErrorMessages.value.isEmpty()) {
+                    navController.navigate("UserListScreen")
+                }
+
             },
             modifier = Modifier
                 .fillMaxWidth(0.7f)
@@ -117,9 +124,8 @@ private fun NewUserForm() {
         ) {
             Text(text = "Cadastrar")
         }
+        ShowErrors(viewModel.addNewUserErrorMessages.value)
     }
-
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
