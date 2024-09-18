@@ -219,16 +219,12 @@ class NewUserViewModel : ViewModel() {
     }
 
     fun noErrors(): Boolean {
-        if(nameErrorMessages.isEmpty() &&
-            emailErrorMessages.isEmpty() &&
-            phoneErrorMessages.isEmpty() &&
-            birthDateErrorMessages.isEmpty() &&
-            passwordErrorMessages.isEmpty() &&
-            roleErrorMessages.isEmpty() &&
-            addNewUserErrorMessages.isEmpty()
-            ) {
-            return true
-        }
-     return false
+        return nameErrorMessages.isEmpty() &&
+                emailErrorMessages.isEmpty() &&
+                phoneErrorMessages.isEmpty() &&
+                birthDateErrorMessages.isEmpty() &&
+                passwordErrorMessages.isEmpty() &&
+                roleErrorMessages.isEmpty() &&
+                addNewUserErrorMessages.isEmpty()
     }
 }

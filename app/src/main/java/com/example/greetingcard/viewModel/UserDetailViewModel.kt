@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.greetingcard.model.Roles
+import com.example.greetingcard.model.UserDetailState
 import com.example.greetingcard.repository.UserRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -17,11 +18,8 @@ import java.time.format.DateTimeParseException
 class UserDetailViewModel() : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-    var nameState by mutableStateOf("")
-    var emailState by mutableStateOf("")
-    var phoneState by mutableStateOf("")
-    var birthDateState by mutableStateOf("")
-    var roleState by mutableStateOf<Roles?>(null)
+    var userDetailState by mutableStateOf(UserDetailState())
+
 
     var isLoading by mutableStateOf(false)
 
@@ -33,11 +31,13 @@ class UserDetailViewModel() : ViewModel() {
             isLoading = true
             try {
                 val user = userRepository.loadUserDetail(userIdState)
-                nameState = user.data.name
-                emailState = user.data.email
-                phoneState = user.data.phone
-                birthDateState = formatDate(user.data.birthDate)
-                roleState = user.data.role
+                userDetailState = UserDetailState(
+                    name = user.data.name,
+                    email = user.data.email,
+                    phone = user.data.phone,
+                    birthDate = formatDate(user.data.birthDate),
+                    role = user.data.role.toString()
+                )
             } catch (e: Exception) {
                 loadUserDetailErrorMessages = listOf(e.message ?: "Erro ao carregar usuário")
             } finally {
