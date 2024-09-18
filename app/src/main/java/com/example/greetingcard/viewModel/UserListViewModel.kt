@@ -16,6 +16,10 @@ class UserListViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
 
+    init {
+        loadUsers()
+    }
+
     var isLoading by mutableStateOf(false)
     var userList = MutableStateFlow<PagingData<ListUserItem>>(PagingData.empty())
     var loadErrorMessages by mutableStateOf(listOf<String>())

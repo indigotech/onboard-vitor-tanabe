@@ -31,10 +31,6 @@ fun UserListScreen(navController: NavHostController) {
     val viewModel: UserListViewModel = viewModel()
     val userPagingItems = viewModel.userList.collectAsLazyPagingItems()
 
-    LaunchedEffect(Unit) {
-        viewModel.loadUsers()
-    }
-
     Scaffold(modifier = Modifier.padding(32.dp),
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("NewUserScreen") }) {
