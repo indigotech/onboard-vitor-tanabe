@@ -34,7 +34,7 @@ fun LoginScreen(navController: NavHostController) {
                 .padding(innerPadding)
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-            TitleH1(title = "Bem vindo(a) à Taqtile!")
+            H1(title = "Bem vindo(a) à Taqtile!")
             Spacer(modifier = Modifier.height(48.dp))
             InputFields(
                 viewModel.emailState,
