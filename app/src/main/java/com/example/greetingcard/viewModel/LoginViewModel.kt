@@ -1,7 +1,9 @@
 package com.example.greetingcard.viewModel
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -11,48 +13,36 @@ import kotlinx.coroutines.launch
 class LoginViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-
-    private val _emailState = mutableStateOf("")
-    val emailState: MutableState<String> get() = _emailState
-
-    private val _passwordState = mutableStateOf("")
-    val passwordState: MutableState<String> get() = _passwordState
-
-    private val _emailErrorMessages = mutableStateOf(listOf<String>())
-    val emailErrorMessages: MutableState<List<String>> get() = _emailErrorMessages
-
-    private val _passwordErrorMessages = mutableStateOf(listOf<String>())
-    val passwordErrorMessages: MutableState<List<String>> get() = _passwordErrorMessages
-
-    private val _authenticationErrorMessages = mutableStateOf(listOf<String>())
-    val authenticationErrorMessages: MutableState<List<String>> get() = _authenticationErrorMessages
-
-    private val _isLoading = mutableStateOf(false)
-    val isLoading: MutableState<Boolean> get() = _isLoading
+    var emailState by mutableStateOf("")
+    var passwordState by mutableStateOf("")
+    var emailErrorMessages by mutableStateOf(listOf<String>())
+    var passwordErrorMessages by mutableStateOf(listOf<String>())
+    var authenticationErrorMessages by mutableStateOf(listOf<String>())
+    var isLoading by mutableStateOf(false)
 
     fun updateEmailInput(email: String) {
-        _emailState.value = email
+        emailState = email
     }
 
     fun updatePasswordInput(password: String) {
-        _passwordState.value = password
+        passwordState = password
     }
 
     fun validateAndSetEmailErrors() {
         val errors = mutableListOf<String>()
-        val email = _emailState.value
+        val email = emailState
 
         if (email.isEmpty()) {
             errors.add("O campo de e-mail está vazio")
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             errors.add("E-mail inválido")
         }
-        _emailErrorMessages.value = errors
+        emailErrorMessages = errors
     }
 
     fun validateAndSetPasswordErrors() {
         val errors = mutableListOf<String>()
-        val password = _passwordState.value
+        val password = passwordState
         val oneLetterAndOneNumberPasswordRegex = Regex("(?=.*[a-zA-Z])(?=.*\\d)")
 
         if (password.isEmpty()) {
@@ -62,24 +52,28 @@ class LoginViewModel : ViewModel() {
         } else if (!oneLetterAndOneNumberPasswordRegex.containsMatchIn(password)) {
             errors.add("A senha deve conter pelo menos uma letra e um número")
         }
-        _passwordErrorMessages.value = errors
+        passwordErrorMessages = errors
     }
 
 
     fun authenticateUser(navController: NavHostController) {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoading = true
             try {
-                val result = userRepository.authenticateUser(_emailState.value, _passwordState.value)
-                result.onSuccess { token ->
+                val result = userRepository.authenticateUser(emailState, passwordState)
+                if (result.isSuccess) {
                     navController.navigate("UserListScreen")
-                }.onFailure {
-                    _authenticationErrorMessages.value = listOf("Usuário ou senha inválidos")
+                } else {
+                    val errors = mutableListOf<String>()
+                    errors.add("Email ou senha inválidos")
+                    authenticationErrorMessages = errors
                 }
             } catch (e: Exception) {
-                _authenticationErrorMessages.value = listOf("Erro inesperado, tente novamente")
+                val errors = mutableListOf<String>()
+                errors.add("Erro ao autenticar: ${e.message}")
+                authenticationErrorMessages = errors
             } finally {
-                _isLoading.value = false
+                isLoading = false
             }
         }
     }

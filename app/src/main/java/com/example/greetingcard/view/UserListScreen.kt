@@ -22,17 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.greetingcard.model.User
+import com.example.greetingcard.model.ListUserItem
 import com.example.greetingcard.viewModel.UserListViewModel
 
 @Composable
 fun UserListScreen(navController: NavHostController) {
     val viewModel: UserListViewModel = viewModel()
-
     val userPagingItems = viewModel.userList.collectAsLazyPagingItems()
-
-    val isLoading by viewModel.isLoading
-    val loadErrorMessages by viewModel.loadErrorMessages
 
     Scaffold(modifier = Modifier.padding(32.dp),
         floatingActionButton = {
@@ -41,19 +37,17 @@ fun UserListScreen(navController: NavHostController) {
             }
         }) { padding ->
         Column(modifier = Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Lista de Usuários")
-            Spacer(modifier = Modifier.height(24.dp))
-            if (isLoading) {
+            if (viewModel.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
-            } else if (loadErrorMessages.isNotEmpty()) {
-                loadErrorMessages.forEach { message ->
+            } else if (viewModel.loadErrorMessages.isNotEmpty()) {
+                viewModel.loadErrorMessages.forEach { message ->
                     Text(text = message, color = Color.Red, modifier = Modifier.padding(16.dp))
                 }
             } else {
                 LazyColumn(
-                    contentPadding = padding,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     items(userPagingItems.itemCount) { index ->
                         val user = userPagingItems[index]
@@ -73,8 +67,9 @@ fun UserListScreen(navController: NavHostController) {
 }
 
 
+
 @Composable
-fun UserItem(user: User, onClick: () -> Unit) {
+fun UserItem(user: ListUserItem, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

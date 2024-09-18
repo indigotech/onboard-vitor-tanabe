@@ -7,13 +7,13 @@ import retrofit2.await
 
 class UserPagingSource(
     private val token: String
-) : PagingSource<Int, User>() {
+) : PagingSource<Int, ListUserItem>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, User> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListUserItem> {
         return try {
             val currentPage = params.key ?: 0
 
-            val response = UserRetrofitService.userRetrofitService.loadUsers(token, currentPage).await()
+            val response = UserRetrofitService.userRetrofitService.loadUsers(token, currentPage)
             val users = response.data.nodes
 
             LoadResult.Page(
@@ -26,7 +26,7 @@ class UserPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, User>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, ListUserItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

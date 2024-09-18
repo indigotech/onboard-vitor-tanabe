@@ -1,10 +1,10 @@
 package com.example.greetingcard.view
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,18 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -33,10 +29,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.greetingcard.model.Roles
+import com.example.greetingcard.view.component.InputFields
+import com.example.greetingcard.view.component.ShowErrors
 import com.example.greetingcard.viewModel.NewUserViewModel
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -57,64 +52,73 @@ fun NewUserScreen(navController: NavHostController) {
 @Composable
 private fun NewUserForm(navController: NavHostController) {
     val viewModel: NewUserViewModel = viewModel()
-    val nameState by viewModel.nameState
-    val emailState by viewModel.emailState
-    val phoneState by viewModel.phoneState
-    val passwordState by viewModel.passwordState
+    val context = LocalContext.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Novo usuário")
         Spacer(modifier = Modifier.height(12.dp))
-
         InputFields(
-            nameState,
+            viewModel.nameState,
             "Nome",
             KeyboardType.Text,
             onValueChange = { name -> viewModel.updateNameInput(name) }
         )
-        ShowErrors(viewModel.nameErrorMessages.value)
+        ShowErrors(viewModel.nameErrorMessages)
         Spacer(modifier = Modifier.height(12.dp))
         InputFields(
-            emailState,
+            viewModel.emailState,
             "E-mail",
             KeyboardType.Email,
             onValueChange = { email -> viewModel.updateEmailInput(email) }
         )
-        ShowErrors(viewModel.emailErrorMessages.value)
+        ShowErrors(viewModel.emailErrorMessages)
         Spacer(modifier = Modifier.height(12.dp))
         InputFields(
-            phoneState,
+            viewModel.phoneState,
             "Telefone",
             KeyboardType.Phone,
             onValueChange = { phone -> viewModel.updatePhoneInput(phone) }
         )
-        ShowErrors(viewModel.phoneErrorMessages.value)
+        ShowErrors(viewModel.phoneErrorMessages)
         Spacer(modifier = Modifier.height(12.dp))
         InputFields(
-            passwordState,
+            viewModel.passwordState,
             "Senha",
             KeyboardType.Password,
             onValueChange = { password -> viewModel.updatePasswordInput(password) },
             true
         )
-        ShowErrors(viewModel.passwordErrorMessages.value)
+        ShowErrors(viewModel.passwordErrorMessages)
+        Spacer(modifier = Modifier.height(12.dp))
+        InputFields(
+            viewModel.birthDateState,
+            "Data de Aniversário",
+            KeyboardType.Number,
+            onValueChange = { birthDate -> viewModel.updateBirthDateInput(birthDate) },
+            maxLength = 8,
+            isDateField = true,
+        )
+        ShowErrors(viewModel.birthDateErrorMessages)
+
         Spacer(modifier = Modifier.height(12.dp))
         UserRoleSelector(viewModel)
-        ShowErrors(viewModel.roleErrorMessages.value)
-        Spacer(modifier = Modifier.height(12.dp))
-        DatePicker(viewModel)
-        ShowErrors(viewModel.birthDateErrorMessages.value)
+        ShowErrors(viewModel.roleErrorMessages)
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = {
                 viewModel.validateAndSetAllErrors()
-
                 viewModel.addNewUser()
 
-                if(viewModel.addNewUserErrorMessages.value.isEmpty()) {
+                Toast.makeText(context, viewModel.birthDateLocalDate.toString() ,Toast.LENGTH_LONG).show()
+
+                if(viewModel.noErrors()) {
                     navController.navigate("UserListScreen")
+                    Toast.makeText(context, "Sucesso ao Cadastrar usuário" ,Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Erro ao Cadastrar usuário}" ,Toast.LENGTH_LONG).show()
                 }
 
             },
@@ -124,69 +128,13 @@ private fun NewUserForm(navController: NavHostController) {
         ) {
             Text(text = "Cadastrar")
         }
-        ShowErrors(viewModel.addNewUserErrorMessages.value)
+        ShowErrors(viewModel.addNewUserErrorMessages)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun DatePicker(viewModel: NewUserViewModel) {
-    var selectedDate by viewModel.birthDateState
-    val dateDialogState = rememberMaterialDialogState()
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Button(
-            onClick = { dateDialogState.show() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = "Selecione uma data",
-                )
-                Text("Selecione a data de aniversário", fontSize = 16.sp)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-
-        Text(
-            text = "Data escolhida: $selectedDate",
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 16.sp
-
-        )
-
-        MaterialDialog(
-            dialogState = dateDialogState,
-            buttons = {
-                positiveButton("Ok")
-                negativeButton("Cancelar")
-            }
-        ) {
-            datepicker(
-                initialDate = selectedDate,
-                title = "Escolha uma data"
-            ) { date ->
-                viewModel.updateBirthDateInput(date)
-            }
-        }
-    }
-}
-
-@Composable
 private fun UserRoleSelector(viewModel: NewUserViewModel) {
-    var selectedRole by viewModel.roleState
 
     Column(
         modifier = Modifier
@@ -203,15 +151,15 @@ private fun UserRoleSelector(viewModel: NewUserViewModel) {
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { selectedRole = Roles.USER }
+                    .clickable { viewModel.roleState = Roles.USER }
                     .padding(8.dp)
                     .fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = selectedRole == Roles.USER,
+                    selected = viewModel.roleState == Roles.USER,
                     onClick = {
-                        selectedRole = Roles.USER
+                        viewModel.roleState = Roles.USER
                         viewModel.updateRoleInput(Roles.USER)
                     }
                 )
@@ -222,15 +170,15 @@ private fun UserRoleSelector(viewModel: NewUserViewModel) {
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { selectedRole = Roles.ADMIN }
+                    .clickable { viewModel.roleState = Roles.ADMIN }
                     .padding(8.dp)
                     .fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RadioButton(
-                    selected = selectedRole == Roles.ADMIN,
+                    selected = viewModel.roleState == Roles.ADMIN,
                     onClick = {
-                        selectedRole = Roles.ADMIN
+                        viewModel.roleState = Roles.ADMIN
                         viewModel.updateRoleInput(Roles.ADMIN)
                     }
                 )

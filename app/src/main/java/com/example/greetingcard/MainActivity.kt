@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.greetingcard.ui.theme.GreetingCardTheme
 import com.example.greetingcard.view.LoginScreen
 import com.example.greetingcard.view.NewUserScreen
+import com.example.greetingcard.view.UserDetailScreen
 import com.example.greetingcard.view.UserListScreen
 
 class MainActivity : ComponentActivity() {
@@ -36,5 +37,9 @@ fun MyApp() {
         composable(route = "Login") { LoginScreen(navController) }
         composable(route = "UserListScreen") { UserListScreen(navController) }
         composable(route = "NewUserScreen") { NewUserScreen(navController) }
+        composable("UserDetailScreen/{id}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("id")
+            UserDetailScreen(userId = userId ?: "", navController = navController)
+        }
     }
 }
