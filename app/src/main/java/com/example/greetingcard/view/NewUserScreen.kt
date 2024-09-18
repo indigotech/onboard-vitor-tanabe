@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,15 +21,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.greetingcard.model.Roles
+import com.example.greetingcard.view.component.ButtonDefault
 import com.example.greetingcard.view.component.InputFields
 import com.example.greetingcard.view.component.ShowErrors
+import com.example.greetingcard.view.component.TitleH1
 import com.example.greetingcard.viewModel.NewUserViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -57,7 +57,7 @@ private fun NewUserForm(navController: NavHostController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(fontWeight = FontWeight.Bold, fontSize = 24.sp, text = "Novo usuário")
+        TitleH1(title = "Novo usuário")
         Spacer(modifier = Modifier.height(12.dp))
         InputFields(
             viewModel.nameState,
@@ -107,14 +107,13 @@ private fun NewUserForm(navController: NavHostController) {
         ShowErrors(viewModel.roleErrorMessages)
         Spacer(modifier = Modifier.height(12.dp))
 
-        Button(
+        ButtonDefault(
+            buttonText = "Cadastrar",
             onClick = {
                 viewModel.validateAndSetAllErrors()
-                viewModel.addNewUser()
-
-                Toast.makeText(context, viewModel.birthDateLocalDate.toString() ,Toast.LENGTH_LONG).show()
 
                 if(viewModel.noErrors()) {
+                    viewModel.addNewUser()
                     navController.navigate("UserListScreen")
                     Toast.makeText(context, "Sucesso ao Cadastrar usuário" ,Toast.LENGTH_LONG).show()
                 } else {
@@ -122,12 +121,7 @@ private fun NewUserForm(navController: NavHostController) {
                 }
 
             },
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-
-        ) {
-            Text(text = "Cadastrar")
-        }
+        )
         ShowErrors(viewModel.addNewUserErrorMessages)
     }
 }

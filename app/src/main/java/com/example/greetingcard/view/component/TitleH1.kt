@@ -1,5 +1,7 @@
 package com.example.greetingcard.view.component
 
+import android.print.PrintAttributes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -10,16 +12,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ShowErrors(errorMessages: List<String>) {
-    if (errorMessages.isNotEmpty()) {
-        for (error in errorMessages) {
-            Text(
-                text = error,
-                color = Color.Red,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
+fun TitleH1(title: String) {
+    Box(
+        modifier = Modifier
+            .padding(top = 20.dp, bottom = 20.dp)
+    ) {
+        Text(
+            text = title,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
     }
 }

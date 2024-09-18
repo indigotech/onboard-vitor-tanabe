@@ -7,4 +7,4 @@ data class NewUserRequest(
     val birthDate: String,
     val password: String,
     val role: Roles
-)
+    )
